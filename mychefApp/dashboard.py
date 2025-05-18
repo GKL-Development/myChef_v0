@@ -23,6 +23,18 @@ if "user_instance" not in st.session_state:
 
 ####################################### Streamlit Web App ####################################################
 
-# Streamlit web page
-st.title(f'''Hello {st.session_state.user_instance.userName}''')
-st.write('Your meal planning organization, in one place')
+# Logo image
+st.logo("./img/logo/row_no_sentence.png", size = "large")
+
+# Title
+with st.container():
+    st.title(f'''Hello {st.session_state.user_instance.userName}''', anchor=False)
+    st.text('Explore and cook delicious recipes for your family and yourself! 🥘')
+
+st.divider()
+
+# Daily recipe
+with st.container():
+    st.subheader('Today', anchor='todayMeal')
+    st.image("./img/weeklyMealImg/mondayMeal.jpg")
+
