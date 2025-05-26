@@ -1,2 +1,2 @@
 run:
-	@streamlit run mychefApp/dashboard.py
+	@streamlit run mychefApp/main.py
