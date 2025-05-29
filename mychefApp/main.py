@@ -29,6 +29,11 @@ pages = {
             "profile.py",
             title="Profile",
             icon="👤"
+        ),
+        st.Page(
+            "testing.py",
+            title="Testing",
+            icon='🧪'
         )
     ]
 }
