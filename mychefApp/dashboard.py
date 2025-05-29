@@ -5,7 +5,7 @@ from dependencies import User, firstName, mealCards
 
 if "user_instance" not in st.session_state:
     # Instanciating session 
-    st.session_state.user_instance = User(firstName, hasMenu=False)
+    st.session_state.user_instance = User(firstName, hasMenu=True)
 
 ####################################### Dashboard ####################################################
 
