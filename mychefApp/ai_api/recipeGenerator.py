@@ -485,13 +485,13 @@ INSERT INTO meals (
 );
 """
 
-def databaseStorage(sqlInsert, recipesData):
+def databaseStorage(sqlInsert, recipesData, userId=1):
     conn = st.connection('neon', type='sql')
     with conn.session as s:
         try:
             for i, recipe in enumerate(recipesData):
                 meal_data = {
-                    "meal_id": 1, # TBD replace with actual user ID
+                    "meal_id": userId, # TBD replace with actual user ID
                     "recipeTitle": recipe.get("Recipe Title"),
                     "yield": json.dumps(recipe.get("Yield")), # Convert list to JSON string for TEXT column
                     "prepTime": recipe.get("Prep time"),

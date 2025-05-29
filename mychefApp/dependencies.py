@@ -100,3 +100,5 @@ def mealCards(hasMenu):
         st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
         st.markdown("""<br>""", unsafe_allow_html=True)
         st.button('Plan your meals!', icon='📅', use_container_width=True) 
+
+# def mealPlanGenerator(userId):

@@ -1,8 +1,7 @@
 # Import packages and dependencies
 import streamlit as st
-import pandas as pd
 
-####################################### Streamlit Web App ####################################################
+####################################### Shopping List ####################################################
 
 # Header
 with st.container():

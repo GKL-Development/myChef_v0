@@ -1,6 +1,5 @@
 # Import packages and dependencies
 import streamlit as st
-import pandas as pd
 from dependencies import User, firstName, mealCards
 
 
@@ -8,7 +7,7 @@ if "user_instance" not in st.session_state:
     # Instanciating session 
     st.session_state.user_instance = User(firstName, hasMenu=False)
 
-####################################### Streamlit Web App ####################################################
+####################################### Dashboard ####################################################
 
 # Header
 with st.container():

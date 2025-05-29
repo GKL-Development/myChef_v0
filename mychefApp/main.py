@@ -18,17 +18,19 @@ pages = {
             title='Shopping List',
             icon="🗒️"
         )
+    ],
+    "Ressources":[
+        st.Page(
+            "about.py", 
+            title="About Us",
+            icon='🌐'
+            ),
+        st.Page(
+            "profile.py",
+            title="Profile",
+            icon="👤"
+        )
     ]
-    # "Ressources":[
-    #     st.Page(
-    #         "", 
-    #         title="About Us"
-    #         ),
-    #     st.Page(
-    #         "",
-    #         title="Profile"
-    #     )
-    # ]
 }
 
 pg=st.navigation(pages)
