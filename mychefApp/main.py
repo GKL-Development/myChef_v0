@@ -4,6 +4,14 @@ import streamlit as st
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")
 
+if "logged_in" not in st.session_state: # To be replaced by -> if not st.user.is_logged_in:
+    st.title("Welcome to MyChef")
+    st.subheader("Login or Register")
+    if st.button('Log in'):
+        st.login("auth0")
+    st.session_state["logged_in"] = True
+    st.stop()
+
 # Defining navigation
 pages = {
     "MyChef":[
