@@ -1,17 +1,13 @@
 # Import packages and dependencies
 import streamlit as st
-from dependencies import User, firstName, mealCards
-
-
-if "user_instance" not in st.session_state:
-    # Instanciating session 
-    st.session_state.user_instance = User(firstName, hasMenu=True)
+# from functions.authentication import User
+from functions.display import mealCards
 
 ####################################### Dashboard ####################################################
 
 # Header
 with st.container():
-    st.title(f'''Hello {st.session_state.user_instance.userName} 🔆''', anchor=False)
+    st.title(f'''Hello {st.session_state.user_instance.firstName} 🔆''', anchor=False)
     st.text('Explore and cook delicious recipes for your family and yourself! 🥘')
 
 st.divider()

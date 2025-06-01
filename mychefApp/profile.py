@@ -1,6 +1,5 @@
 import streamlit as st
-from dependencies import firstName
 
 ####################################### Profile ####################################################
-st.title(f"{firstName}'s profile 👤")
+st.title(f"{st.session_state.user_instance.firstName}'s profile 👤")
 st.divider()
