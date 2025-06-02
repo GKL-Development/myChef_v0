@@ -2,14 +2,11 @@ import streamlit as st
 import bcrypt
 from sqlalchemy.sql import text
 import pandas as pd # Check whether this makes app crash or not // if not then remove
+import time
 
 ######################## USER DATA ########################
 
-# # Temporary hard-coded variables
-# firstName = 'Louis'
-# n = 6
-
-# Defining user class
+# Defining user class for session state variable
 class User:
     def __init__(self, firstName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
         self.firstName = firstName
@@ -18,18 +15,17 @@ class User:
         self.userDislike = userDislike
         self.hasMenu = hasMenu
 
-# @st.cache_resource
-def fetch_user_info(username):
+def fetch_user_info(email):
     """Fetch user information in the database to enrich 
     st.session_state.user_instance with the User class"""
-    if username:
+    if email:
         fetching_query = ("""
             SELECT firstname, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
         conn = st.connection('neon', type='sql', ttl=60)
         try:
-            user_db = conn.query(fetching_query, params={"email": username}, show_spinner=False)
+            user_db = conn.query(fetching_query, params={"email": email}, show_spinner=False)
             if not user_db.empty:
                 st.session_state.user_instance = User(
                     firstName=user_db["firstname"].iloc[0], 
@@ -49,7 +45,7 @@ def fetch_user_info(username):
         st.error("Contact customer support at admin@gkldevelopment.com")
         return False
 
-######################## AUTHENTICATION ########################
+######################## AUTHENTICATION & REGISTRATION ########################
 
 # Authentication logic below - To be changed with SSO authentication
 
@@ -59,11 +55,10 @@ def hash_password(password):
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')
 
-# Credential verification
-# @st.cache_resource
-def credentials(username, password):
+# Credential verification for user authentication
+def credentials(email, password):
     """Verifying users credentials for authentication"""
-    if not username or not password:
+    if not email or not password:
         return False
     verification_query = ("""
         SELECT password FROM users WHERE email = :email
@@ -71,7 +66,7 @@ def credentials(username, password):
     # Establishing connection with database
     conn = st.connection('neon', type='sql', ttl=60)
     try:
-        user_pwd = conn.query(verification_query, params={"email": username}, ttl=60, show_spinner=False)
+        user_pwd = conn.query(verification_query, params={"email": email}, ttl=60, show_spinner=False)
         # Check if the query is not empty
         if not user_pwd.empty: 
             return bcrypt.checkpw(password.encode("utf-8"), user_pwd["password"].iloc[0].encode("utf-8"))
@@ -82,68 +77,139 @@ def credentials(username, password):
         st.error(f"Database connection failed: {e}")
         st.stop()
 
-def registration_protocol(username, password):
-    if not username or not password:
+# Registration protocol
+def registration_protocol(email, password, firstname, lastname, sex, birthdate, allergens="", diet="", dislikes="", hasmeal=False, username=""):
+    """Registration protocol for user inscription in database"""
+    if not email or not password:
         return False
+    usr_variable_dict = {
+        "email": email,
+        "password": hash_password(password=password),
+        "firstname": firstname,
+        "lastname": lastname,
+        "sex": sex,
+        "birthdate": birthdate,
+        "allergens": allergens,
+        "diet": diet,
+        "dislikes": dislikes,
+        "hasmeal": hasmeal,
+        "username": username
+    }
     registration_query = ("""
         INSERT INTO users(
         user_id,
-        first_name,
+        firstname,
         lastname,
         sex,
         birthdate,
         email,
         hasmeal,
         password,
-        userName,
+        username,
         allergens,
         diet,
         dislikes
         )
         VALUES (
         DEFAULT,
-        :first_name,
+        :firstname,
         :lastname,
         :sex,
         :birthdate,
         :email,
         :hasmeal,
         :password,
-        :userName,
+        :username,
         :allergens,
         :diet,
         :dislikes
         )
     """)
+    conn = st.connection('neon', type='sql', ttl=60)
+    with conn.session as s:
+        try:
+            s.execute(text(registration_query), usr_variable_dict)
+            s.commit()
+        except Exception as e:
+            st.error(f"Invalid email or password... Please try again or contact us {e}")
+            st.stop()
+    return True
 
+@st.dialog("Please complete credentials information:")
+def registration_dialog(email, password):
+    # Defining gender dictionnary for user informations
+    gender_dict = {
+        "Male": "M",
+        "Female": "F",
+        ":rainbow[Other]": "O",
+        "Don't Specify": None
+    }
+    # Sarting dialog form
+    st.write("Thank you for signing up!" \
+    "We want to get to know you a bit more before you can access the app.")
+
+    # Prompting user for information
+    firstname = st.text_input("What is your firstname?")
+    lastname = st.text_input("What is your lastname?")
+    birthdate = st.date_input("When's your birthdate?", value=None, min_value="1900-01-01")
+    gender_choice = st.radio("What gender are you?",["Male", "Female", ":rainbow[Other]", "Don't Specify"])
+    sex = gender_dict[gender_choice]
+    if st.button("Submit", use_container_width=True):
+        if not firstname or not lastname or not birthdate or not gender_choice:
+            st.warning("One of the information has not been filled.")
+        else:
+            registration_protocol(email=email, password=password, firstname=firstname, lastname=lastname, birthdate=birthdate, sex=sex)
+            # Useless design for database communication waiting time
+            progress_text = "Registration in progress..."
+            my_bar = st.progress(0, text=progress_text)
+            for percent_complete in range(100):
+                time.sleep(0.05)
+                my_bar.progress(percent_complete + 1, text=progress_text)
+            time.sleep(1)
+            my_bar.empty
+        st.rerun()
+        return True
+    else:
+        st.error("Something went wrong. Please try again.")
+        return False
+
+# Registration function for visual form and onboarding
 def register():
+    """User are going to be onboarded through this function and the information are pushed to the database through registration protocol"""
     with st.expander("Not registered yet? Create an account now!"):
     # st.subheader("Not registered yet? Create an account now!")
         with st.form("Register", enter_to_submit=False, border=False):
-            username = st.text_input(label="Enter your email:", type="default").lower()
+            email = st.text_input(label="Enter your email:", type="default").lower()
             password = st.text_input(label="Enter your password:", type="password")
             confirm_pwd = st.text_input(label="Confirm your password:", type="password")
-            if st.form_submit_button("Register now!", use_container_width=True):
-                st.warning("Not working yet...")
-                # if registration_protocol():
-                    
-                # else:
-                #     st.error("Invalid email or password... Please try again or contact us")
-                    # st.warning("Registration is not available. Contact admin@gkldevelopment.com to obtain login credentials!")
+            if st.form_submit_button("Register now!", use_container_width=True):    
+                if password == confirm_pwd: 
+                    if registration_dialog(email=email, password=password):
+                        # Updating session state
+                        st.session_state["authenticated"] = True
+                        st.session_state["email"] = email
+                        st.success("Registered successfully!")
+                        fetch_user_info(email=email)
+                        st.rerun()
+                else:
+                    st.warning("Passwords must match! Please check if there is no typos.")
 
-# Authentication function
+                
+
+# Authentication function for login
 def authenticate():
+    """User are being signed in after credential verification protocol with database user informations"""
     st.title("Welcome on MyChef")
     st.text("Your weekly meal planner to make cooking meals enjoyable!")
     with st.form("Login", enter_to_submit=False):
-        username = st.text_input(label="Enter your email:", type="default").lower()
+        email = st.text_input(label="Enter your email:", type="default").lower()
         password = st.text_input(label="Enter your password:", type="password")
         if st.form_submit_button("Login", use_container_width=True):
-            if credentials(username=username, password=password):
+            if credentials(email=email, password=password):
                 st.session_state["authenticated"] = True
-                st.session_state["username"] = username
+                st.session_state["email"] = email
                 st.success("Logged in successfully!")
-                fetch_user_info(username=username)
+                fetch_user_info(email=email)
                 st.rerun()
             else: 
                 st.error("Invalid email or password...")

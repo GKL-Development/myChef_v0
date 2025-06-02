@@ -7,12 +7,12 @@ st.logo("./img/logo/row_no_sentence.png", size = "large")
 
 if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
     st.session_state["authenticated"] = False
-    st.session_state["username"] = None
+    st.session_state["email"] = None
 
 if st.session_state["authenticated"]:
     if "user_instance" not in st.session_state:
         st.session_state["authenticated"] = False
-        st.session_state["username"] = None
+        st.session_state["email"] = None
         st.error("Database connection failed. Try login again or contact support at admin@gkldevelopment.com")
         st.rerun() # Rerun to show login form
     if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
