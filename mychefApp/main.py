@@ -15,7 +15,7 @@ if st.session_state["authenticated"]:
         st.error("Database connection failed. Try login again or contact support at admin@gkldevelopment.com")
         st.rerun() # Rerun to show login form
     if st.sidebar.button("Check our crowdfunding!", use_container_width=True):
-        st.warning("Not yet live. Come back in a couple of days!")
+        st.sidebar.warning("Not yet live. Come back in a couple of days!")
     if st.sidebar.button("Logout", use_container_width=True, type="primary"):
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
