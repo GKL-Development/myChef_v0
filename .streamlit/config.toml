@@ -1,3 +1,6 @@
+[client]
+toolbarMode = "auto"
+
 [theme]
 primaryColor="#4a694b"
 backgroundColor="#f9f5ea"

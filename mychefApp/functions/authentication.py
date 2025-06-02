@@ -1,7 +1,7 @@
 import streamlit as st
 import bcrypt
 from sqlalchemy.sql import text
-import pandas as pd
+import pandas as pd # Check whether this makes app crash or not // if not then remove
 
 ######################## USER DATA ########################
 
@@ -18,7 +18,7 @@ class User:
         self.userDislike = userDislike
         self.hasMenu = hasMenu
 
-@st.cache_data
+# @st.cache_resource
 def fetch_user_info(username):
     """Fetch user information in the database to enrich 
     st.session_state.user_instance with the User class"""
@@ -60,7 +60,7 @@ def hash_password(password):
     return hashed_password.decode('utf-8')
 
 # Credential verification
-@st.cache_data
+# @st.cache_resource
 def credentials(username, password):
     """Verifying users credentials for authentication"""
     if not username or not password:
@@ -82,15 +82,61 @@ def credentials(username, password):
         st.error(f"Database connection failed: {e}")
         st.stop()
 
+def registration_protocol(username, password):
+    if not username or not password:
+        return False
+    registration_query = ("""
+        INSERT INTO users(
+        user_id,
+        first_name,
+        lastname,
+        sex,
+        birthdate,
+        email,
+        hasmeal,
+        password,
+        userName,
+        allergens,
+        diet,
+        dislikes
+        )
+        VALUES (
+        DEFAULT,
+        :first_name,
+        :lastname,
+        :sex,
+        :birthdate,
+        :email,
+        :hasmeal,
+        :password,
+        :userName,
+        :allergens,
+        :diet,
+        :dislikes
+        )
+    """)
+
 def register():
-    return
+    with st.expander("Not registered yet? Create an account now!"):
+    # st.subheader("Not registered yet? Create an account now!")
+        with st.form("Register", enter_to_submit=False, border=False):
+            username = st.text_input(label="Enter your email:", type="default").lower()
+            password = st.text_input(label="Enter your password:", type="password")
+            confirm_pwd = st.text_input(label="Confirm your password:", type="password")
+            if st.form_submit_button("Register now!", use_container_width=True):
+                st.warning("Not working yet...")
+                # if registration_protocol():
+                    
+                # else:
+                #     st.error("Invalid email or password... Please try again or contact us")
+                    # st.warning("Registration is not available. Contact admin@gkldevelopment.com to obtain login credentials!")
 
 # Authentication function
 def authenticate():
     st.title("Welcome on MyChef")
     st.text("Your weekly meal planner to make cooking meals enjoyable!")
-    with st.form("Login"):
-        username = st.text_input(label="Enter your email:", type="default")
+    with st.form("Login", enter_to_submit=False):
+        username = st.text_input(label="Enter your email:", type="default").lower()
         password = st.text_input(label="Enter your password:", type="password")
         if st.form_submit_button("Login", use_container_width=True):
             if credentials(username=username, password=password):
@@ -101,7 +147,5 @@ def authenticate():
                 st.rerun()
             else: 
                 st.error("Invalid email or password...")
-    st.subheader("Not registered yet? Create an account now!")
-    if st.button("Register now!"):
-        st.warning("Registration is not available. Contact admin@gkldevelopment.com to obtain login credentials!")
+
 

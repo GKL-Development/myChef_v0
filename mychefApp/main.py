@@ -1,12 +1,13 @@
 import streamlit as st
-from functions.authentication import authenticate
+from functions.authentication import authenticate, register
+import time
 
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")
 
-# if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
-#     st.session_state["authenticated"] = False
-#     st.session_state["username"] = None
+if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
+    st.session_state["authenticated"] = False
+    st.session_state["username"] = None
 
 if st.session_state["authenticated"]:
     if "user_instance" not in st.session_state:
@@ -14,13 +15,15 @@ if st.session_state["authenticated"]:
         st.session_state["username"] = None
         st.error("Database connection failed. Try login again or contact support at admin@gkldevelopment.com")
         st.rerun() # Rerun to show login form
-    if st.sidebar.button("Check our crowdfunding!", use_container_width=True):
+    if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
         st.sidebar.warning("Not yet live. Come back in a couple of days!")
     if st.sidebar.button("Logout", use_container_width=True, type="primary"):
-        st.session_state["authenticated"] = False
-        st.session_state["username"] = None
         st.success("Logged out successfully!")
-        st.rerun() # Rerun to show login form
+        # Delete all the items in Session state
+        for key in st.session_state.keys():
+            del st.session_state[key]
+        st.rerun() 
+        # Rerun to show login form
     # st.sidebar.divider()
     # st.sidebar.markdown("<i>MyChef© by GKL Development</i>", unsafe_allow_html=True)
 
@@ -62,3 +65,4 @@ if st.session_state["authenticated"]:
     pg.run()
 else:
     authenticate()
+    register()
