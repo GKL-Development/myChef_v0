@@ -86,6 +86,7 @@ def mealCards(hasMenu):
         st.subheader('No Meals Generated Yet...')
         st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
         st.markdown("""<br>""", unsafe_allow_html=True)
-        st.button('Plan your meals!', icon='📅', use_container_width=True) 
+        if st.button('Plan your meals!', icon='📅', use_container_width=True):
+            st.warning("Function currently unavailable... Follow us on instagram to keep track of our latest updates!") 
 
 # def mealPlanGenerator(userId):

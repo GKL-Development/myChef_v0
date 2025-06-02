@@ -78,7 +78,7 @@ def credentials(email, password):
         st.stop()
 
 # Registration protocol
-def registration_protocol(email, password, firstname, lastname, sex, birthdate, allergens="", diet="", dislikes="", hasmeal=False, username=""):
+def registration_protocol(email, password, firstname, lastname, sex, birthdate, username, hasmeal=False):
     """Registration protocol for user inscription in database"""
     if not email or not password:
         return False
@@ -89,9 +89,6 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         "lastname": lastname,
         "sex": sex,
         "birthdate": birthdate,
-        "allergens": allergens,
-        "diet": diet,
-        "dislikes": dislikes,
         "hasmeal": hasmeal,
         "username": username
     }
@@ -120,9 +117,9 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         :hasmeal,
         :password,
         :username,
-        :allergens,
-        :diet,
-        :dislikes
+        NULL,
+        NULL,
+        NULL
         )
     """)
     conn = st.connection('neon', type='sql', ttl=60)
@@ -151,27 +148,32 @@ def registration_dialog(email, password):
     # Prompting user for information
     firstname = st.text_input("What is your firstname?")
     lastname = st.text_input("What is your lastname?")
+    username = st.text_input("Enter a username:")
     birthdate = st.date_input("When's your birthdate?", value=None, min_value="1900-01-01")
     gender_choice = st.radio("What gender are you?",["Male", "Female", ":rainbow[Other]", "Don't Specify"])
     sex = gender_dict[gender_choice]
     if st.button("Submit", use_container_width=True):
-        if not firstname or not lastname or not birthdate or not gender_choice:
+        if not firstname or not lastname or not birthdate or not sex:
             st.warning("One of the information has not been filled.")
         else:
-            registration_protocol(email=email, password=password, firstname=firstname, lastname=lastname, birthdate=birthdate, sex=sex)
-            # Useless design for database communication waiting time
-            progress_text = "Registration in progress..."
-            my_bar = st.progress(0, text=progress_text)
-            for percent_complete in range(100):
-                time.sleep(0.05)
-                my_bar.progress(percent_complete + 1, text=progress_text)
-            time.sleep(1)
-            my_bar.empty
-        st.rerun()
-        return True
-    else:
-        st.error("Something went wrong. Please try again.")
-        return False
+            if registration_protocol(email=email, password=password, firstname=firstname, lastname=lastname, birthdate=birthdate, sex=sex, username=username):
+                # Useless design for database communication waiting time
+                progress_text = "Registration in progress..."
+                my_bar = st.progress(0, text=progress_text)
+                for percent_complete in range(100):
+                    time.sleep(0.05)
+                    my_bar.progress(percent_complete + 1, text=progress_text)
+                time.sleep(1)
+                my_bar.empty
+                st.success("Registered successfully!")
+                if fetch_user_info(email=email):
+                    st.session_state["authenticated"] = True
+                    st.session_state["email"] = email
+                    st.rerun()
+                else:
+                    st.error("Failed to fetch user information after registration. Please try logging in manually.")
+            else:
+                st.error("Registration failed. Please try again or contact support.")
 
 # Registration function for visual form and onboarding
 def register():
@@ -184,17 +186,9 @@ def register():
             confirm_pwd = st.text_input(label="Confirm your password:", type="password")
             if st.form_submit_button("Register now!", use_container_width=True):    
                 if password == confirm_pwd: 
-                    if registration_dialog(email=email, password=password):
-                        # Updating session state
-                        st.session_state["authenticated"] = True
-                        st.session_state["email"] = email
-                        st.success("Registered successfully!")
-                        fetch_user_info(email=email)
-                        st.rerun()
+                    registration_dialog(email=email, password=password)
                 else:
                     st.warning("Passwords must match! Please check if there is no typos.")
-
-                
 
 # Authentication function for login
 def authenticate():

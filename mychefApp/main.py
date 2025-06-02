@@ -5,7 +5,7 @@ import time
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")
 
-if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
+if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
     st.session_state["email"] = None
 
