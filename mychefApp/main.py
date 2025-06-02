@@ -4,9 +4,9 @@ from functions.authentication import authenticate
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")
 
-if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
-    st.session_state["authenticated"] = False
-    st.session_state["username"] = None
+# if "authenticated" not in st.session_state: # To be replaced by -> if not st.user.authenticated:
+#     st.session_state["authenticated"] = False
+#     st.session_state["username"] = None
 
 if st.session_state["authenticated"]:
     if "user_instance" not in st.session_state:
