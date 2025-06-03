@@ -99,12 +99,14 @@ if ss["authenticated"]:
     pg=st.navigation(pages)
     pg.run()
 else:
-    st.title("Welcome on MyChef")
-    st.text("Your weekly meal planner to make cooking meals enjoyable!")
-    signIn, signUp = st.tabs(["Sign-In :unlock:", "Sign-Up :receipt:"])
-    with signIn:
-        authenticate()
-    with signUp:
-        register()
+    l_, mid, r_ = st.columns([1,3,1], border=False, vertical_alignment="top")
+    with mid:
+        st.title("Welcome on MyChef")
+        st.text("Your weekly meal planner to make cooking meals enjoyable!")
+        signIn, signUp = st.tabs(["Sign-In :unlock:", "Sign-Up :receipt:"])
+        with signIn:
+            authenticate()
+        with signUp:
+            register()
     # st.link_button("Intagram", url="https://www.instagram.com/mychef.be/", type='tertiary', icon='🔗', use_container_width=False)
     # st.link_button("LinkedIn", url="https://www.linkedin.com/in/louis-gokelaere/", type='tertiary', icon='🪪', use_container_width=False)
