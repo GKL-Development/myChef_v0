@@ -3,6 +3,7 @@ import bcrypt
 from sqlalchemy.sql import text
 import pandas as pd # Check whether this makes app crash or not // if not then remove
 import time
+from streamlit_cookies_controller import CookieController
 
 ######################## USER DATA ########################
 
@@ -161,11 +162,12 @@ def registration_dialog(email, password):
                 progress_text = "Registration in progress..."
                 my_bar = st.progress(0, text=progress_text)
                 for percent_complete in range(100):
-                    time.sleep(0.05)
+                    time.sleep(0.02)
                     my_bar.progress(percent_complete + 1, text=progress_text)
                 time.sleep(1)
                 my_bar.empty
                 st.success("Registered successfully!")
+                # Fetching user info on db
                 if fetch_user_info(email=email):
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
@@ -178,33 +180,42 @@ def registration_dialog(email, password):
 # Registration function for visual form and onboarding
 def register():
     """User are going to be onboarded through this function and the information are pushed to the database through registration protocol"""
-    with st.expander("Not registered yet? Create an account now!"):
+    # with st.("Not registered yet? Create an account now!"):
     # st.subheader("Not registered yet? Create an account now!")
-        with st.form("Register", enter_to_submit=False, border=False):
-            email = st.text_input(label="Enter your email:", type="default").lower()
-            password = st.text_input(label="Enter your password:", type="password")
-            confirm_pwd = st.text_input(label="Confirm your password:", type="password")
-            if st.form_submit_button("Register now!", use_container_width=True):    
-                if password == confirm_pwd: 
-                    registration_dialog(email=email, password=password)
-                else:
-                    st.warning("Passwords must match! Please check if there is no typos.")
+    with st.form("Register", enter_to_submit=True):
+        email = st.text_input(label="Enter your email:", type="default").lower()
+        password = st.text_input(label="Enter your password:", type="password")
+        confirm_pwd = st.text_input(label="Confirm your password:", type="password")
+        if st.form_submit_button("Register now!", use_container_width=True):    
+            if password == confirm_pwd: 
+                registration_dialog(email=email, password=password)
+            else:
+                st.warning("Passwords must match! Please check if there is no typos.")
 
 # Authentication function for login
 def authenticate():
     """User are being signed in after credential verification protocol with database user informations"""
-    st.title("Welcome on MyChef")
-    st.text("Your weekly meal planner to make cooking meals enjoyable!")
-    with st.form("Login", enter_to_submit=False):
+    with st.form("Login", enter_to_submit=True):
         email = st.text_input(label="Enter your email:", type="default").lower()
         password = st.text_input(label="Enter your password:", type="password")
         if st.form_submit_button("Login", use_container_width=True):
             if credentials(email=email, password=password):
-                st.session_state["authenticated"] = True
-                st.session_state["email"] = email
+                # Useless design for database communication waiting time
+                progress_text = "Registration in progress..."
+                my_bar = st.progress(0, text=progress_text)
+                for percent_complete in range(100):
+                    time.sleep(0.02)
+                    my_bar.progress(percent_complete + 1, text=progress_text)
+                time.sleep(1)
+                my_bar.empty
                 st.success("Logged in successfully!")
-                fetch_user_info(email=email)
-                st.rerun()
+                # Fetching user info on db
+                if fetch_user_info(email=email):
+                    st.session_state["authenticated"] = True
+                    st.session_state["email"] = email
+                    st.rerun()
+                else:
+                    st.error("Failed to fetch user information after registration. Please try logging in manually.")
             else: 
                 st.error("Invalid email or password...")
 
