@@ -5,12 +5,16 @@ import pandas as pd # Check whether this makes app crash or not // if not then r
 import time
 from streamlit_cookies_controller import CookieController
 
+# Instanciating cookies controller 
+cookie_controller = CookieController()
+
 ######################## USER DATA ########################
 
 # Defining user class for session state variable
 class User:
-    def __init__(self, firstName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
+    def __init__(self, firstName, lastName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
         self.firstName = firstName
+        self.lastName = lastName
         self.userAllerg = userAllerg
         self.userDiet= userDiet
         self.userDislike = userDislike
@@ -21,7 +25,7 @@ def fetch_user_info(email):
     st.session_state.user_instance with the User class"""
     if email:
         fetching_query = ("""
-            SELECT firstname, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
+            SELECT firstname, lastname, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
         conn = st.connection('neon', type='sql', ttl=60)
@@ -30,6 +34,7 @@ def fetch_user_info(email):
             if not user_db.empty:
                 st.session_state.user_instance = User(
                     firstName=user_db["firstname"].iloc[0], 
+                    lastName=user_db['lastname'].iloc[0],
                     userAllerg=user_db["allergens"].iloc[0], 
                     userDiet=user_db["diet"].iloc[0], 
                     userDislike=user_db["dislikes"].iloc[0], 
@@ -161,9 +166,9 @@ def registration_dialog(email, password):
                 # Useless design for database communication waiting time
                 progress_text = "Registration in progress..."
                 my_bar = st.progress(0, text=progress_text)
-                for percent_complete in range(100):
+                for percent_complete in range(0,100):
+                    my_bar.progress(percent_complete+1, text=progress_text)
                     time.sleep(0.02)
-                    my_bar.progress(percent_complete + 1, text=progress_text)
                 time.sleep(1)
                 my_bar.empty
                 st.success("Registered successfully!")
@@ -198,14 +203,19 @@ def authenticate():
     with st.form("Login", enter_to_submit=True):
         email = st.text_input(label="Enter your email:", type="default").lower()
         password = st.text_input(label="Enter your password:", type="password")
+        st.checkbox("Remember Me", on_change=cookie_controller.set("user_email", email))
         if st.form_submit_button("Login", use_container_width=True):
             if credentials(email=email, password=password):
                 # Useless design for database communication waiting time
                 progress_text = "Registration in progress..."
                 my_bar = st.progress(0, text=progress_text)
-                for percent_complete in range(100):
-                    time.sleep(0.02)
-                    my_bar.progress(percent_complete + 1, text=progress_text)
+                my_bar.progress(0, text=progress_text)
+                time.sleep(0.01)
+                my_bar.progress(30, text=progress_text)
+                time.sleep(0.01)
+                my_bar.progress(70, text=progress_text)
+                time.sleep(0.01)
+                my_bar.progress(100, text=progress_text)
                 time.sleep(1)
                 my_bar.empty
                 st.success("Logged in successfully!")
