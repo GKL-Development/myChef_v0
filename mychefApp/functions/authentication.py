@@ -228,5 +228,3 @@ def authenticate():
                     st.error("Failed to fetch user information after registration. Please try logging in manually.")
             else: 
                 st.error("Invalid email or password...")
-
-

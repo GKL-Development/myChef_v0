@@ -18,9 +18,6 @@ from streamlit_cookies_controller import CookieController
 # Instanciating cookies controller 
 cookie_controller = CookieController()
 
-# Logo image
-st.logo("./img/logo/row_no_sentence.png", size = "large")
-
 ss = st.session_state
 
 # Assign authentication and email session state to correct value for authentication
@@ -63,6 +60,8 @@ if ss["authenticated"]:
         # Rerun to show login form
     # st.sidebar.divider()
     # st.sidebar.markdown("<i>MyChef© by GKL Development</i>", unsafe_allow_html=True)
+    # Logo image
+    st.logo("./img/logo/row_no_sentence.png", size = "large")
     # Defining navigation
     pages = {
         "MyChef":[
