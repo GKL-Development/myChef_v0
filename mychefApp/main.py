@@ -61,7 +61,7 @@ if ss["authenticated"]:
     # st.sidebar.divider()
     # st.sidebar.markdown("<i>MyChef© by GKL Development</i>", unsafe_allow_html=True)
     # Logo image
-    st.logo("./img/logo/row_no_sentence.png", size = "large")
+    st.logo("./img/logo/row_no_sentence.png", size = "large", link="dashboard.py")
     # Defining navigation
     pages = {
         "MyChef":[
@@ -98,6 +98,8 @@ if ss["authenticated"]:
     pg=st.navigation(pages)
     pg.run()
 else:
+    # Logo image
+    st.logo("./img/logo/row_no_sentence.png", size = "large")
     l_, mid, r_ = st.columns([1,3,1], border=False, vertical_alignment="top")
     with mid:
         st.title("Welcome on MyChef")
