@@ -20,6 +20,9 @@ cookie_controller = CookieController()
 
 ss = st.session_state
 
+# Logo image
+st.logo("./img/logo/row_no_sentence.png", size = "large")
+
 # Assign authentication and email session state to correct value for authentication
 if "authenticated" not in ss:
     ss["authenticated"] = False
@@ -60,8 +63,6 @@ if ss["authenticated"]:
         # Rerun to show login form
     # st.sidebar.divider()
     # st.sidebar.markdown("<i>MyChef© by GKL Development</i>", unsafe_allow_html=True)
-    # Logo image
-    st.logo("./img/logo/row_no_sentence.png", size = "large", link="dashboard.py")
     # Defining navigation
     pages = {
         "MyChef":[
@@ -98,8 +99,6 @@ if ss["authenticated"]:
     pg=st.navigation(pages)
     pg.run()
 else:
-    # Logo image
-    st.logo("./img/logo/row_no_sentence.png", size = "large")
     l_, mid, r_ = st.columns([1,3,1], border=False, vertical_alignment="top")
     with mid:
         st.title("Welcome on MyChef")
