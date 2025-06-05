@@ -21,7 +21,7 @@ cookie_controller = CookieController()
 ss = st.session_state
 
 # Logo image
-st.logo("./img/logo/row_no_sentence.png", size = "large", link="dashboard.py")
+st.logo("./img/logo/row_no_sentence.png", size = "large")
 
 # Assign authentication and email session state to correct value for authentication
 if "authenticated" not in ss:
