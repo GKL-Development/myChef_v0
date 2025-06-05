@@ -113,7 +113,7 @@ def read_prompt_file(filepath):
 
 ################################ GEMINI AI API ################################
 
-def generate(input):
+def gemini_ai_api(input):
     client = genai.Client(
         api_key=os.environ.get("GEMINI_API_KEY"),
     )
