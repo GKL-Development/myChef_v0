@@ -113,7 +113,7 @@ def read_prompt_file(filepath):
 
 ################################ GEMINI AI API ################################
 
-def generate():
+def generate(input):
     client = genai.Client(
         api_key=os.environ.get("GEMINI_API_KEY"),
     )
@@ -123,7 +123,7 @@ def generate():
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text="""INSERT_INPUT_HERE"""), # Query to generate meals
+                types.Part.from_text(text=input), # Query to generate meals based on user preferences
             ],
         ),
     ]

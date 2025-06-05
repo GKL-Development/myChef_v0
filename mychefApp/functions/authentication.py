@@ -10,6 +10,11 @@ cookie_controller = CookieController()
 
 ######################## USER DATA ########################
 
+# Creates a db connection and cache it
+@st.cache_resource()
+def init_connection():
+    return st.connection('neon', type='sql')
+
 # Defining user class for session state variable
 class User:
     def __init__(self, firstName, lastName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
@@ -28,7 +33,7 @@ def fetch_user_info(email):
             SELECT firstname, lastname, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
-        conn = st.connection('neon', type='sql', ttl=60)
+        conn = init_connection()
         try:
             user_db = conn.query(fetching_query, params={"email": email}, show_spinner=False)
             if not user_db.empty:
@@ -70,9 +75,9 @@ def credentials(email, password):
         SELECT password FROM users WHERE email = :email
     """)
     # Establishing connection with database
-    conn = st.connection('neon', type='sql', ttl=60)
+    conn = init_connection()
     try:
-        user_pwd = conn.query(verification_query, params={"email": email}, ttl=60, show_spinner=False)
+        user_pwd = conn.query(verification_query, params={"email": email}, ttl=5, show_spinner=False)
         # Check if the query is not empty
         if not user_pwd.empty: 
             return bcrypt.checkpw(password.encode("utf-8"), user_pwd["password"].iloc[0].encode("utf-8"))
@@ -128,7 +133,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         NULL
         )
     """)
-    conn = st.connection('neon', type='sql', ttl=60)
+    conn = init_connection()
     with conn.session as s:
         try:
             s.execute(text(registration_query), usr_variable_dict)
