@@ -27,7 +27,7 @@ st.markdown(
         # background-color: #e6e4d4;
         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #c5c5c5;
-
+        text-align: center;
     }
     </style>
     """,

@@ -113,7 +113,7 @@ def read_prompt_file(filepath):
 
 ################################ GEMINI AI API ################################
 
-def gemini_ai_api(input):
+def gemini_ai_api(input, temp):
     client = genai.Client(
         api_key=os.environ.get("GEMINI_API_KEY"),
     )
@@ -128,7 +128,7 @@ def gemini_ai_api(input):
         ),
     ]
     generate_content_config = types.GenerateContentConfig(
-        temperature=0.9,
+        temperature=temp/100,
         safety_settings=[
             types.SafetySetting(
                 category="HARM_CATEGORY_HARASSMENT",
@@ -246,12 +246,11 @@ def gemini_ai_api(input):
         ],
     )
 
-    for chunk in client.models.generate_content_stream(
+    response = client.models.generate_content(
         model=model,
         contents=contents,
         config=generate_content_config,
-    ):
-        print(chunk.text, end="")
+    )
 
-if __name__ == "__main__":
-    generate()
+    return response.text
+

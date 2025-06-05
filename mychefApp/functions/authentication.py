@@ -17,9 +17,13 @@ def init_connection():
 
 # Defining user class for session state variable
 class User:
-    def __init__(self, firstName, lastName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
+    def __init__(self, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
         self.firstName = firstName
         self.lastName = lastName
+        self.sex = sex
+        self.birthdate = birthdate
+        self.email = email
+        self.userName = userName
         self.userAllerg = userAllerg
         self.userDiet= userDiet
         self.userDislike = userDislike
@@ -30,7 +34,7 @@ def fetch_user_info(email):
     st.session_state.user_instance with the User class"""
     if email:
         fetching_query = ("""
-            SELECT firstname, lastname, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
+            SELECT firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
         conn = init_connection()
@@ -40,6 +44,10 @@ def fetch_user_info(email):
                 st.session_state.user_instance = User(
                     firstName=user_db["firstname"].iloc[0], 
                     lastName=user_db['lastname'].iloc[0],
+                    sex=user_db['sex'].iloc[0],
+                    birthdate=user_db['birthdate'].iloc[0],
+                    email=user_db['email'].iloc[0],
+                    userName=user_db['username'].iloc[0],
                     userAllerg=user_db["allergens"].iloc[0], 
                     userDiet=user_db["diet"].iloc[0], 
                     userDislike=user_db["dislikes"].iloc[0], 
@@ -139,7 +147,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
             s.execute(text(registration_query), usr_variable_dict)
             s.commit()
         except Exception as e:
-            st.error(f"Invalid email or password... Please try again or contact us {e}")
+            st.error(f"Invalid credentials provided... Please try again or contact us.")
             st.stop()
     return True
 

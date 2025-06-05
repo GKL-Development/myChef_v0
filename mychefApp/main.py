@@ -52,7 +52,7 @@ if ss["authenticated"]:
         st.rerun() # Rerun to show login form
     if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
         st.sidebar.warning("Not yet live. Come back in a couple of days!")
-    if st.sidebar.button("Logout", use_container_width=True, type="primary"):
+    if st.sidebar.button("Logout", use_container_width=True, type="primary", key="logout"):
         # Delete all the items in Session state
         for key in ss.keys():
             del ss[key]

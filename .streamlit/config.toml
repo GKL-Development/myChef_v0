@@ -7,3 +7,6 @@ backgroundColor="#f9f5ea"
 secondaryBackgroundColor="#e6e4d4"
 textColor="#4a694b"
 linkColor="800080"
+
+[runner]
+magicEnabled = true
