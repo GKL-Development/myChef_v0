@@ -34,6 +34,7 @@ with info:
 with food_pref:
     # Food preferences
     st.subheader("Food Preferences:")
+    st.button("https://res.cloudinary.com/dmg7zxlwr/image/upload/v1743327748/gluten_kh58jt.png")
 
 # Save and commit changes to db
 st.divider()
