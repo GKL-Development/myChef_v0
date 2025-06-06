@@ -2,7 +2,7 @@
 import streamlit as st
 from ai_api.recipeGenerator import databaseStorage, gemini_ai_api
 import pandas as pd
-import json, time, ast
+import json, time
 
 # Defining default prompt text - no restrictions
 prompt_text = """Number of recipes: 7
@@ -23,7 +23,8 @@ Maximum % of Recipes with Meat/Fish: 40"""
 st.title("Testing Page 🧪")
 st.text("This page is for backend testing and will be removed from the app. Using this page is not recommended and will likely require admin authentication for interactions.")
 st.html("<br>")
-# Authentication
+
+# Authentication for testing
 def credentials():
     if st.session_state["passwd"] == st.secrets["testing_password"]:
         st.session_state["tester_logged_in"] = True
@@ -80,13 +81,27 @@ if authenticate():
                 # Visualizing the meal plan
                 st.write("Returning meal plan dataframe!")
                 recipe_df = pd.json_normalize(structured_output_dict["recipes"],
-                    # Use 'Ingredients List' as the record path for detailed ingredient info
-                    record_path=["Ingredients List"],
                     # Meta-data to include from the main recipe object
                     meta=["Recipe Title", "Allergens", "Cook time", "Prep time", "Total time",
                           "Equipment", "Instructions", "Is Meat Or Fish", "MyChef Note",
-                          "Allergen Safety Note", "Yield", "MyChef Tips"],
+                          "Allergen Safety Note", "Yield", "MyChef Tips", "Ingredients List"],
                     # This will create a cartesian product, linking each ingredient to its recipe
-                    sep='_')
+                    sep='.')
                 status.update(label="Meal plan generated!", state="complete", expanded=False)
             st.dataframe(recipe_df)
+            st.dataframe(pd.json_normalize(
+                            structured_output_dict["recipes"],
+                            record_path='Ingredients List',
+                            meta=['Recipe Title'], # Include 'temp_recipe_id' for merging
+                            record_prefix='ingredient.', # Prefix column names like 'ingredient.Name'
+                            sep='.',
+                            errors='ignore'
+                        ))
+            st.dataframe(pd.json_normalize(
+                            structured_output_dict["recipes"],
+                            record_path='MyChef Tips',
+                            meta=['Recipe Title'], # Include 'temp_recipe_id' for merging
+                            record_prefix='mychef_tip.', # Prefix column names like 'mychef_tip.Kid-Friendly Adaptation'
+                            sep='.',
+                            errors='ignore'
+                        ))
