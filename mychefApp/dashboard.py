@@ -1,7 +1,7 @@
 # Import packages and dependencies
 import streamlit as st
 # from functions.authentication import User
-from functions.display import mealCards
+from functions.displayMeals import mealCards
 
 ####################################### Dashboard ####################################################
 

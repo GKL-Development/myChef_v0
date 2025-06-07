@@ -4,6 +4,7 @@ import time, bcrypt, json
 import pandas as pd
 from datetime import date
 from streamlit_cookies_controller import CookieController
+from authentication import init_connection
 
 def databaseRecipesStorage(recipesData, userId=1):
     """The function takes recipesData already JSON parsed 
@@ -25,7 +26,8 @@ def databaseRecipesStorage(recipesData, userId=1):
             myChefTips,
             allergens,
             allergensSafetyNote,
-            isMeatOrFish
+            isMeatOrFish,
+            totalTime
         ) VALUES (
             :creator_id,
             :meal_id,
@@ -40,7 +42,8 @@ def databaseRecipesStorage(recipesData, userId=1):
             :myChefTips,
             :allergens,
             :allergensSafetyNote,
-            :isMeatOrFish
+            :isMeatOrFish,
+            :totalTime
         );
         """
         
@@ -53,7 +56,7 @@ def databaseRecipesStorage(recipesData, userId=1):
         meal_id_dict = {}
         
         # Establishing connection with database
-        conn = st.connection('neon', type='sql')
+        conn = init_connection()
         with conn.session as s:
             try:
                 for i, recipe in enumerate(recipes):
@@ -71,7 +74,8 @@ def databaseRecipesStorage(recipesData, userId=1):
                         "myChefTips": json.dumps(recipe.get("MyChef Tips")),
                         "allergens": json.dumps(recipe.get("Allergens", [])), # Provide empty list if key not found
                         "allergensSafetyNote": recipe.get("Allergen Safety Note"),
-                        "isMeatOrFish": recipe.get("Is Meat Or Fish")
+                        "isMeatOrFish": recipe.get("Is Meat Or Fish"),
+                        "totalTime": recipe.get("Total time")
                     }
                     meal_id_dict[recipe.get("Recipe Title")] = int(str_date + str(i) + str(userId)) # Defining a dictionnary of meal recipes and their ID for ingredients Database insertion
                     s.execute(text(insert_sql), meal_data)
@@ -81,7 +85,7 @@ def databaseRecipesStorage(recipesData, userId=1):
             except Exception as e:
                 st.error(f"The following error occured during insertion to database: {e}")
                 s.rollback()
-        return True, meal_id_dict
+        return meal_id_dict
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
 
@@ -117,7 +121,7 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
         # str_date = today.strftime("%Y%m%d")
         
         # Establishing connection with database
-        conn = st.connection('neon', type='sql')
+        conn = init_connection()
         with conn.session as s:
             try:
                 # JSON Normalizing JSON

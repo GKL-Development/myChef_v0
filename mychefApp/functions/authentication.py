@@ -17,7 +17,8 @@ def init_connection():
 
 # Defining user class for session state variable
 class User:
-    def __init__(self, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, lastMeal=None):
+    def __init__(self, user_id, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, lastMeal=None):
+        self.user_id = user_id
         self.firstName = firstName
         self.lastName = lastName
         self.sex = sex
@@ -34,7 +35,7 @@ def fetch_user_info(email):
     st.session_state.user_instance with the User class"""
     if email:
         fetching_query = ("""
-            SELECT firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, lastmeal FROM users WHERE email = :email
+            SELECT user_id, firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, lastmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
         conn = init_connection()
@@ -42,6 +43,7 @@ def fetch_user_info(email):
             user_db = conn.query(fetching_query, params={"email": email}, show_spinner=False)
             if not user_db.empty:
                 st.session_state.user_instance = User(
+                    user_id=user_db["user_id"].iloc[0],
                     firstName=user_db["firstname"].iloc[0], 
                     lastName=user_db['lastname'].iloc[0],
                     sex=user_db['sex'].iloc[0],
@@ -61,7 +63,7 @@ def fetch_user_info(email):
             st.error(f"Database connection failed: {e}")
             return False
     else:
-        st.error("Contact customer support at admin@gkldevelopment.com")
+        st.error("Email not found. Contact us at admin@gkldevelopment.com")
         return False
 
 ######################## AUTHENTICATION & REGISTRATION ########################

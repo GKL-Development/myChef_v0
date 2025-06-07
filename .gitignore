@@ -4,3 +4,4 @@ mychefApp\__pycache__
 mychefApp\ai_api\__pycache__
 mychefApp\functions\__pycache__
 mychefApp/ai_api/prompt_instructions
+tests
