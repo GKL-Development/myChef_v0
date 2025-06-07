@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
-from db_fetch_functions import fetch_recipes_ingredients
+from functions.db_fetch_functions import fetch_user_recipes
+import math
 
 ################################## Variable, classes and functions ########################################
 
@@ -36,25 +37,28 @@ def mealCards(lastMeal):
             st.markdown("""<br>""", unsafe_allow_html=True)
 
             # Fetching meal plan recipes
-            with st.spinner("Fetching your recipes.", show_time=False):
-                weeklyPlan, recipesId = fetch_recipes_ingredients(ss.user_instance.user_id, today)
-                ss["recipesId"] = recipesId
+            weeklyPlan, recipesId = fetch_user_recipes(ss.user_instance.user_id, today)
+            ss["recipesId"] = recipesId
             
+            # Starting columns generation
             numberOfRecipes = len(weeklyPlan) # Defines the number of recipes for the column generation
-            max_columns = 3 # Defining the max recipes columns per row 
-            num_of_row = numberOfRecipes / max_columns # Calculating row needed
+            max_columns = 2 # Defining the max recipes columns per row 
+            num_of_row = math.ceil(numberOfRecipes / max_columns) # Calculating row needed
             current_col = 0 # Set the current col number for weeklyPlan dict parsing
             for row in range(num_of_row):
                 # Calculates the number of columns needed to fill the current row // It will take max_columns if there are more than 3 to be processed
                 column_in_row = min(max_columns, numberOfRecipes - current_col)
                 if column_in_row > 0: # Creates a new row only if they are still columns to be processed
-                    cols = st.columns(column_in_row, gap='small', vertical_alignment='top', border=True)
-                    for i, col in enumerate(cols):
-                        with col:
+                    cols = st.columns([1, 1], gap='small', vertical_alignment='top', border=True)
+                    for i in range(column_in_row):
+                        with cols[i]:
                             recipe_day = st.subheader(weekDays[current_col])
-                            st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'], use_column_width=True, width=300)
-                            st.markdown(f"{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == '["None"]' else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens']}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['preptime']}")
-
+                            st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'], use_container_width=True, width=300)
+                            st.markdown(f"{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "['None']" else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens']}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime']}")
+                            recipe_details = st.button("Cook Now!", key=recipe_day, use_container_width=True)
+                            if recipe_details:
+                                st.warning("Not functional yet. Try again later.")
+                        current_col += 1
 
             
             # with col6:

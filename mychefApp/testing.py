@@ -55,7 +55,7 @@ if authenticate():
             recipesData = json.loads(json_txt)
             with st.status("Pushing recipes and ingredients to database", expanded=True) as status:
                 st.write("Pushing the recipes")
-                recipeStored, mealId = databaseRecipesStorage(recipesData=recipesData, userId=int(userId))
+                mealId = databaseRecipesStorage(recipesData=recipesData, userId=int(userId))
                 st.write("Writing ingredient list")
                 databaseIngredientsStorage(recipesData=recipesData, meal_id_dict=mealId, userId=userId)
                 status.update(label="Recipes and ingredients stored successfully", state="complete", expanded=False)

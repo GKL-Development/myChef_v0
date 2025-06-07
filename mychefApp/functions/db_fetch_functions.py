@@ -2,7 +2,7 @@ import streamlit as st
 import bcrypt
 from sqlalchemy.sql import text
 import time
-from authentication import init_connection
+from functions.authentication import init_connection
 
 @st.cache_data(max_entries=200, ttl=3600)
 def fetch_user_recipes(userId, date):
@@ -28,8 +28,8 @@ def fetch_user_recipes(userId, date):
             AND DATE_PART('week', creationdate) = :week
         """
         params = {
-            "user": userId,
-            "week": week
+            "user": int(userId),
+            "week": int(week)
         }
         conn = init_connection()
         recipes = conn.query(recipeQuery, params=params, show_spinner=False)

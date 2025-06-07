@@ -4,7 +4,7 @@ import time, bcrypt, json
 import pandas as pd
 from datetime import date
 from streamlit_cookies_controller import CookieController
-from authentication import init_connection
+from functions.authentication import init_connection
 
 def databaseRecipesStorage(recipesData, userId=1):
     """The function takes recipesData already JSON parsed 
