@@ -36,4 +36,4 @@ st.markdown(
 
 # Meal content starts here
 
-mealCards(st.session_state.user_instance.hasMenu)
+mealCards(st.session_state.user_instance.lastMeal)

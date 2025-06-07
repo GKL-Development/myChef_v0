@@ -17,7 +17,7 @@ def init_connection():
 
 # Defining user class for session state variable
 class User:
-    def __init__(self, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, hasMenu=False):
+    def __init__(self, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, lastMeal=None):
         self.firstName = firstName
         self.lastName = lastName
         self.sex = sex
@@ -27,14 +27,14 @@ class User:
         self.userAllerg = userAllerg
         self.userDiet= userDiet
         self.userDislike = userDislike
-        self.hasMenu = hasMenu
+        self.lastMeal = lastMeal
 
 def fetch_user_info(email):
     """Fetch user information in the database to enrich 
     st.session_state.user_instance with the User class"""
     if email:
         fetching_query = ("""
-            SELECT firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, hasmeal FROM users WHERE email = :email
+            SELECT firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, lastmeal FROM users WHERE email = :email
         """)
         # Establishing connection with database
         conn = init_connection()
@@ -51,7 +51,7 @@ def fetch_user_info(email):
                     userAllerg=user_db["allergens"].iloc[0], 
                     userDiet=user_db["diet"].iloc[0], 
                     userDislike=user_db["dislikes"].iloc[0], 
-                    hasMenu=user_db["hasmeal"].iloc[0]
+                    lastMeal=user_db["lastmeal"].iloc[0]
                 )
                 return True
             else:

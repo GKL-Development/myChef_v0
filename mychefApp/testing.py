@@ -1,6 +1,7 @@
 # Importing dependencies
 import streamlit as st
-from ai_api.recipeGenerator import databaseStorage, gemini_ai_api
+from ai_api.recipeGenerator import gemini_ai_api
+from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 import pandas as pd
 import json, time
 
@@ -43,13 +44,21 @@ recipe_insert, recipe_gen = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Gene
 if authenticate():
     # Testing SQL insertion
     with recipe_insert:
+        st.info("Updated:" \
+        "Now the function will not only store the recipes in the db but also store the ingredients list for these recipes.")
         st.subheader("Recipes insertion to database")
         st.text("Fill up the text area with the JSON output of a recipe and your userID and press the button to insert this recipe to the database")
         st.markdown("<br>", unsafe_allow_html=True)
         json_txt = st.text_area("Input a JSON string here...", height=150, max_chars=None)
         userId = st.number_input("Insert your User ID", value=None, placeholder="User ID")
         if st.button("Insert JSON recipes to SQL", use_container_width=True, icon="📩"):
-            databaseStorage(recipesData=json_txt, userId=int(userId))
+            recipesData = json.loads(json_txt)
+            with st.status("Pushing recipes and ingredients to database", expanded=True) as status:
+                st.write("Pushing the recipes")
+                recipeStored, mealId = databaseRecipesStorage(recipesData=recipesData, userId=int(userId))
+                st.write("Writing ingredient list")
+                databaseIngredientsStorage(recipesData=recipesData, meal_id_dict=mealId, userId=userId)
+                status.update(label="Recipes and ingredients stored successfully", state="complete", expanded=False)
         st.divider()
         if st.button("Log out!"):
             st.session_state["tester_logged_in"] = False
@@ -61,7 +70,7 @@ if authenticate():
         "The given pre-filled text is an elaborate _Generative AI_ prompt that is meant to provide enough instructions to MyChef to generate meals for your week.")
         st.markdown("<br>", unsafe_allow_html=True)
         prompt = st.text_area("Prompt MyChef:", value=prompt_text, height=320, max_chars=None)
-        creativity = st.slider("Handle MyChef creativity:", 0, 110, 90)
+        creativity = st.slider("Handle MyChef creativity:", 0, 10, 8)
         if st.button("Let MyChef cook!", use_container_width=True, icon="🥘", key="generateRecipes"):
             # Normalize the 'recipes' key from the JSON data
             with st.status("MyChef is cooking!", expanded=True) as status:
@@ -92,16 +101,17 @@ if authenticate():
             st.dataframe(pd.json_normalize(
                             structured_output_dict["recipes"],
                             record_path='Ingredients List',
-                            meta=['Recipe Title'], # Include 'temp_recipe_id' for merging
+                            meta=['Recipe Title'], # Include 'recipe_id' for merging
                             record_prefix='ingredient.', # Prefix column names like 'ingredient.Name'
                             sep='.',
                             errors='ignore'
                         ))
-            st.dataframe(pd.json_normalize(
-                            structured_output_dict["recipes"],
-                            record_path='MyChef Tips',
-                            meta=['Recipe Title'], # Include 'temp_recipe_id' for merging
-                            record_prefix='mychef_tip.', # Prefix column names like 'mychef_tip.Kid-Friendly Adaptation'
-                            sep='.',
-                            errors='ignore'
-                        ))
+            # Not using the MyChef tips for the moment.
+            # st.dataframe(pd.json_normalize(
+            #                 structured_output_dict["recipes"],
+            #                 record_path='MyChef Tips',
+            #                 meta=['Recipe Title'], # Include 'temp_recipe_id' for merging
+            #                 record_prefix='mychef_tip.', # Prefix column names like 'mychef_tip.Kid-Friendly Adaptation'
+            #                 sep='.',
+            #                 errors='ignore'
+            #             ))
