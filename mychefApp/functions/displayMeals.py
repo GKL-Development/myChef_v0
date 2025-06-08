@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
 from functions.db_fetch_functions import fetch_user_recipes
+from functions.generateMealPlan import generateMealPlan, selectMealPref
 import math
 
 ################################## Variable, classes and functions ########################################
@@ -54,7 +55,7 @@ def mealCards(lastMeal):
                         with cols[i]:
                             recipe_day = st.subheader(weekDays[current_col])
                             st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'], use_container_width=True, width=300)
-                            st.markdown(f"{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "{None}" else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens']}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime']}]")
+                            st.markdown(f"{":green-badge[:material/check: Allergen Free]" if "None" in weeklyPlan[current_col]['allergens'] else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens']}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime']}]")
                             recipe_details = st.button("Cook Now!", key=recipe_day, use_container_width=True)
                             if recipe_details:
                                 st.warning("Not functional yet. Try again later.")
@@ -64,12 +65,17 @@ def mealCards(lastMeal):
             st.subheader('No Meals Generated Yet...')
             st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
             st.markdown("""<br>""", unsafe_allow_html=True)
-            if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
-                st.warning("Function currently unavailable... Follow us on instagram to keep track of our latest updates!") 
+            if "preferences" not in st.session_state:
+                if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
+                    selectMealPref()
+            else:
+                generateMealPlan(ss.user_instance.user_id)
     else:
         st.subheader("You have never generated meal plan.")
         st.text("We would love to know a bit more about your food preferences before generating your first meal plan")
         st.markdown("""<br>""", unsafe_allow_html=True)
-        if st.button('Your weekly plan are a just a click away', icon='📅', use_container_width=True):
-            st.warning("Function currently unavailable... Follow us on instagram to keep track of our latest updates!")
-# def mealPlanGenerator(userId):
+        if "preferences" not in st.session_state:
+            if st.button('Your weekly plan are a just a click away', icon='📅', use_container_width=True):
+                selectMealPref()
+        else:
+            generateMealPlan(ss.user_instance.user_id)

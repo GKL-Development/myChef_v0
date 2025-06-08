@@ -79,10 +79,12 @@ def databaseRecipesStorage(recipesData, userId=1):
                     s.execute(text(insert_sql), meal_data)
                 s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": userId, "today": today})
                 s.commit()
+                return True
                 # st.success(f"Successfully inserted {len(recipes)} recipes for User ID: {1}") // Not needed for user use
             except Exception as e:
                 st.error(f"The following error occured during insertion to database: {e}")
                 s.rollback()
+                return False
         return meal_id_dict
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
@@ -151,8 +153,10 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
                 # Inserting ingredients into DB.
                 s.execute(text(insert_sql), records_to_insert)
                 s.commit()
+                return True
             except Exception as e:
                 st.error(f"An error occured: {e}")
                 s.rollback()
+                return False
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")

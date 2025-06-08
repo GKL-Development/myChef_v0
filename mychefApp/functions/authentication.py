@@ -121,7 +121,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         sex,
         birthdate,
         email,
-        hasmeal,
+        lastmeal,
         password,
         username,
         allergens,
@@ -135,7 +135,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         :sex,
         :birthdate,
         :email,
-        :hasmeal,
+        NULL,
         :password,
         :username,
         NULL,
@@ -163,7 +163,7 @@ def registration_dialog(email, password):
         "Don't Specify": None
     }
     # Sarting dialog form
-    st.write("Thank you for signing up!" \
+    st.write("Thank you for signing up! " \
     "We want to get to know you a bit more before you can access the app.")
 
     # Prompting user for information
@@ -218,7 +218,7 @@ def authenticate():
     with st.form("Login", enter_to_submit=True):
         email = st.text_input(label="Enter your email:", type="default").lower()
         password = st.text_input(label="Enter your password:", type="password")
-        st.checkbox("Remember Me", on_change=cookie_controller.set("user_email", email))
+        remember_me = st.checkbox("Remember Me")
         if st.form_submit_button("Login", use_container_width=True):
             if credentials(email=email, password=password):
                 # Useless design for database communication waiting time
@@ -238,6 +238,7 @@ def authenticate():
                 if fetch_user_info(email=email):
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
+                    cookie_controller.set("user_email", email)
                     st.rerun()
                 else:
                     st.error("Failed to fetch user information after registration. Please try logging in manually.")

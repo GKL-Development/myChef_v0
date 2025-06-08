@@ -71,7 +71,7 @@ if authenticate():
         st.markdown("<br>", unsafe_allow_html=True)
         prompt = st.text_area("Prompt MyChef:", value=prompt_text, height=320, max_chars=None)
         creativity = st.slider("Handle MyChef creativity:", 0, 10, 8)
-        if st.button("Let MyChef cook!", use_container_width=True, icon="🥘", key="generateRecipes"):
+        if st.button("Let MyChef cook!", use_container_width=True, icon="🥘", key="generateRecipesTest"):
             # Normalize the 'recipes' key from the JSON data
             with st.status("MyChef is cooking!", expanded=True) as status:
                 # Instanciating the prompting and meal generation process

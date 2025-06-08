@@ -1,7 +1,5 @@
 import streamlit as st
-import bcrypt
 from sqlalchemy.sql import text
-import time
 from functions.authentication import init_connection
 
 @st.cache_data(max_entries=200, ttl=3600)

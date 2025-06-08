@@ -14,6 +14,7 @@ st.set_page_config(
 import time # For demonstration of re-run pause
 from functions.authentication import authenticate, register, fetch_user_info
 from streamlit_cookies_controller import CookieController
+from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
 
 # Instanciating cookies controller 
 cookie_controller = CookieController()
@@ -57,6 +58,8 @@ if ss["authenticated"]:
         for key in ss.keys():
             del ss[key]
         cookie_controller.remove("user_email")
+        fetch_user_recipes.clear()
+        fetch_recipes_ingredients.clear()
         st.sidebar.success("You have been logged out.")
         time.sleep(1)
         st.rerun() 
