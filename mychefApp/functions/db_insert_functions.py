@@ -23,7 +23,6 @@ def databaseRecipesStorage(recipesData, userId=1):
             myChefNotes,
             equipment,
             instructions,
-            myChefTips,
             allergens,
             allergensSafetyNote,
             isMeatOrFish,
@@ -39,13 +38,12 @@ def databaseRecipesStorage(recipesData, userId=1):
             :myChefNotes,
             :equipment,
             :instructions,
-            :myChefTips,
             :allergens,
             :allergensSafetyNote,
             :isMeatOrFish,
             :totalTime
         );
-        """
+        """ # To insert MyChefTips later
         
         # # Loading JSON data
         recipes = recipesData['recipes']
@@ -65,14 +63,14 @@ def databaseRecipesStorage(recipesData, userId=1):
                         "meal_id": int(str_date + str(i) + str(userId)), # The meal ID is a composition of the meal number, the date and the user ID
                         "creationDate": today, # Stores the date of the creation of the recipes to verify if user has created a meal today
                         "recipeTitle": recipe.get("Recipe Title"),
-                        "yield": json.dumps(recipe.get("Yield")), # Convert list to JSON string for TEXT column
+                        "yield": recipe.get("Yield"), 
                         "prepTime": recipe.get("Prep time"),
                         "cookTime": recipe.get("Cook time"),
                         "myChefNotes": recipe.get("MyChef Note"),
                         "equipment": recipe.get("Equipment"),
-                        "instructions": json.dumps(recipe.get("Instructions")),
-                        "myChefTips": json.dumps(recipe.get("MyChef Tips")),
-                        "allergens": json.dumps(recipe.get("Allergens", [])), # Provide empty list if key not found
+                        "instructions": recipe.get("Instructions"),
+                        # "myChefTips": json.dumps(recipe.get("MyChef Tips")),
+                        "allergens": recipe.get("Allergens", []), # Provide empty list if key not found
                         "allergensSafetyNote": recipe.get("Allergen Safety Note"),
                         "isMeatOrFish": recipe.get("Is Meat Or Fish"),
                         "totalTime": recipe.get("Total time")

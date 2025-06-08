@@ -82,10 +82,7 @@ def gemini_ai_api(input, temp):
                                 type = genai.types.Type.STRING,
                             ),
                             "Yield": genai.types.Schema(
-                                type = genai.types.Type.ARRAY,
-                                items = genai.types.Schema(
-                                    type = genai.types.Type.STRING,
-                                ),
+                                type = genai.types.Type.STRING,
                             ),
                             "Prep time": genai.types.Schema(
                                 type = genai.types.Type.STRING,
@@ -148,10 +145,7 @@ def gemini_ai_api(input, temp):
                                 type = genai.types.Type.BOOLEAN,
                             ),
                             "Allergens": genai.types.Schema(
-                                type = genai.types.Type.ARRAY,
-                                items = genai.types.Schema(
-                                    type = genai.types.Type.STRING,
-                                ),
+                                type = genai.types.Type.STRING,
                             ),
                         },
                     ),

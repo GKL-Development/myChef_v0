@@ -19,8 +19,10 @@ st.markdown(
     /* Target images specifically within the 'stImage' container */
     div[data-testid="stImage"] img {
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        border-radius: 8px;
-        border: 1px solid #c5c5c5;
+        border: 0px solid #c5c5c5;
+        border-radius: 0px;
+        height: 200px;
+        object-fit: cover;
     }
 
     div[data-testid="stColumn"] {
@@ -28,7 +30,12 @@ st.markdown(
         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #c5c5c5;
         text-align: center;
+        border-radius: 8px;
+        padding: 10px 20px 20px 20px;
+        max-width: 49%;
+        justify-content: space-between;
     }
+
     </style>
     """,
     unsafe_allow_html=True
