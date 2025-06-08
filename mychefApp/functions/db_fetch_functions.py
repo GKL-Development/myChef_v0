@@ -57,12 +57,11 @@ def fetch_recipes_ingredients(userId, recipesId):
             WHERE 1=1
             AND recipe_id IN :recipeIdList
         """
-        params = {"recipeIdList": recipesId}
+        params = {"recipeIdList": tuple(recipesId)}
         conn = init_connection()
         ingredients = conn.query(ingredientsQuery, params=params, show_spinner=False)
         if not ingredients.empty:
-            for ingredient in range(len(ingredients)):
-                st.checkbox(ingredients.iloc[ingredient].tolist())
+            return ingredients
         else:
             st.error("Cannot fetch shopping list ingredients. Please reload the page and contact us if the error persist" \
             "Contact: admin@gkldevelopment.com")
