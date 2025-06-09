@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import date
-from functions.db_fetch_functions import fetch_user_recipes
 from functions.generateMealPlan import generateMealPlan, selectMealPref
 from functions.displayMeals import mealCards
 

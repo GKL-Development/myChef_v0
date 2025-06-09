@@ -12,12 +12,18 @@ st.set_page_config(
     })
 
 import time # For demonstration of re-run pause
-from functions.authentication import authenticate, register, fetch_user_info
-from streamlit_cookies_controller import CookieController
-from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
+from functions.authentication import authenticate, register, fetch_user_info, logout
+from streamlit_cookies_manager import EncryptedCookieManager
 
 # Instanciating cookies controller 
-cookie_controller = CookieController()
+cookies = EncryptedCookieManager(
+    prefix="./mychefApp/",
+    password=st.secrets["cookies_password"]
+)
+
+# Wait for the component to load cookies
+if not cookies.ready():
+    st.stop()
 
 ss = st.session_state
 
@@ -31,7 +37,7 @@ if "authenticated" not in ss:
 
 # Verification of existing session
 if not ss["authenticated"]:
-    user_email_from_cookie = cookie_controller.get("user_email")
+    user_email_from_cookie = cookies.get("logged_in_user")
     if user_email_from_cookie:
         # You might want to re-validate the user_id from the cookie with your backend
         # to ensure it's still a valid session/user. For simplicity, we're just
@@ -54,15 +60,12 @@ if ss["authenticated"]:
     if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
         st.sidebar.warning("Not yet live. Come back in a couple of days!")
     if st.sidebar.button("Logout", use_container_width=True, type="primary", key="logout"):
-        # Delete all the items in Session state
-        for key in ss.keys():
-            del ss[key]
-        cookie_controller.remove("user_email")
-        fetch_user_recipes.clear()
-        fetch_recipes_ingredients.clear()
-        st.sidebar.success("You have been logged out.")
-        time.sleep(1)
-        st.rerun() 
+        if logout():
+            st.sidebar.success("You have been logged out.")
+            time.sleep(1)
+            st.rerun() 
+        else:
+            st.sidebar.error("Failed to log you out. Please try again.")
         # Rerun to show login form
     # st.sidebar.divider()
     # st.sidebar.markdown("<i>MyChef© by GKL Development</i>", unsafe_allow_html=True)

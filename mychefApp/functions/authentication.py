@@ -3,17 +3,17 @@ import bcrypt
 from sqlalchemy.sql import text
 import pandas as pd # Check whether this makes app crash or not // if not then remove
 import time
-from streamlit_cookies_controller import CookieController
+from streamlit_cookies_manager import EncryptedCookieManager
+from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
+from functions.connection import init_connection
 
-# Instanciating cookies controller 
-cookie_controller = CookieController()
+# Instanciating cookies
+cookies = EncryptedCookieManager(
+    prefix="./mychefApp/",
+    password=st.secrets["cookies_password"]
+)
 
 ######################## USER DATA ########################
-
-# Creates a db connection and cache it
-@st.cache_resource()
-def init_connection():
-    return st.connection('neon', type='sql')
 
 # Defining user class for session state variable
 class User:
@@ -236,11 +236,24 @@ def authenticate():
                 st.success("Logged in successfully!")
                 # Fetching user info on db
                 if fetch_user_info(email=email):
+                    if remember_me:
+                        cookies["logged_in_user"] = email
+                        cookies.save()
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
-                    cookie_controller.set("user_email", email)
                     st.rerun()
                 else:
                     st.error("Failed to fetch user information after registration. Please try logging in manually.")
             else: 
                 st.error("Invalid email or password...")
+
+def logout():
+    # Delete all the items in Session state
+    if "logged_in_user" in cookies:
+        del cookies["logged_in_user"]
+        cookies.save()
+    for key in st.session_state.keys():
+        del st.session_state[key]
+    fetch_user_recipes.clear()
+    fetch_recipes_ingredients.clear()
+    return True

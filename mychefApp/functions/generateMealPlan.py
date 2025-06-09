@@ -59,7 +59,7 @@ def generateMealPlan(userId):
     Allergy Constraints: None
     Disliked Ingredients: None
     Seasonal/Regional Focus: Early summer in Europe.
-    Household Composition: {ssp["adults"]} adults, {ssp["childs"] if ssp["childs"] is not None else 0} child (age 2)
+    Household Composition: {ssp["adults"]} adults, {ssp["childs"] if ssp["childs"] is not None else 0} child
     Meal Type: Dinner
     Maximum Total Time: {ssp["total_time"]}.
     Budget Consideration: {ssp["budget"]}.
