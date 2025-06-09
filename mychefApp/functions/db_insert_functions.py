@@ -1,9 +1,7 @@
 import streamlit as st
 from sqlalchemy.sql import text
-import time, bcrypt, json
 import pandas as pd
 from datetime import date
-from streamlit_cookies_controller import CookieController
 from functions.authentication import init_connection
 
 def databaseRecipesStorage(recipesData, userId=1):
@@ -79,12 +77,10 @@ def databaseRecipesStorage(recipesData, userId=1):
                     s.execute(text(insert_sql), meal_data)
                 s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": userId, "today": today})
                 s.commit()
-                return True
                 # st.success(f"Successfully inserted {len(recipes)} recipes for User ID: {1}") // Not needed for user use
             except Exception as e:
                 st.error(f"The following error occured during insertion to database: {e}")
                 s.rollback()
-                return False
         return meal_id_dict
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
@@ -157,6 +153,5 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
             except Exception as e:
                 st.error(f"An error occured: {e}")
                 s.rollback()
-                return False
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")

@@ -14,5 +14,5 @@ st.divider()
 with st.container():
     ingredients = fetch_recipes_ingredients(ss.user_instance.user_id, ss.recipesId)
     for i in range(len(ingredients)):
-        ingredient = str(int(ingredients['quantity'].iloc[i])) + " " + ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i]
+        ingredient = str(int(ingredients['quantity'].iloc[i] if ingredients['quantity'].iloc[i] != 0 else "")) + " " + ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i]
         st.checkbox(ingredient, key=i)

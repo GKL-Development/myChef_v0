@@ -91,17 +91,18 @@ def generateMealPlan(userId):
                 # Saving shopping list
                 st.write("Crafting your shopping list...")
                 if databaseIngredientsStorage(recipesData=recipesData, meal_id_dict=mealId, userId=user):
+                    del ss.user_instance
                     if fetch_user_info(email=ss["email"]):
                         status.update(label="Meal plan generated!", state="complete", expanded=False)
-                        st.success("Your weekly meal plan will be displayed shortly.")
-                        time.sleep(2)
-                        st.rerun()
                 else:
                     status.update(label="Failed to save your ingredients. Please try again", state="error", expanded=False)
                     st.stop()
             else:
                 status.update(label="Failed to save your meal plan. Please try again", state="error", expanded=False)
                 st.stop()
+        st.success("Your weekly meal plan will be displayed shortly.")
+        time.sleep(2)
+        st.rerun()
     except Exception as e:
         st.error("We couldn't generate your meal. Please try again or contact us: admin@gkldevelopment.com")
         st.stop()

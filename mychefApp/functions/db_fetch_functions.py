@@ -50,12 +50,13 @@ def fetch_recipes_ingredients(userId, recipesId):
     if userId and recipesId:
         ingredientsQuery = """
             SELECT
-            quantity,
+            SUM(quantity) AS quantity,
             unit,
             ingredient_name
             FROM ingredients
             WHERE 1=1
             AND recipe_id IN :recipeIdList
+            GROUP BY unit, ingredient_name
         """
         params = {"recipeIdList": tuple(recipesId)}
         conn = init_connection()
