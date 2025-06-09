@@ -1,5 +1,4 @@
 .streamlit/secrets.toml
-img/weeklyMealImg
 mychefApp\__pycache__
 mychefApp\ai_api\__pycache__
 mychefApp\functions\__pycache__
