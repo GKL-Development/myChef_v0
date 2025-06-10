@@ -3,16 +3,15 @@ import bcrypt
 from sqlalchemy.sql import text
 import pandas as pd # Check whether this makes app crash or not // if not then remove
 import time
-from streamlit_cookies_manager import EncryptedCookieManager
 from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
 from functions.connection import init_connection
+from streamlit_cookies_manager import EncryptedCookieManager
 
 # Instanciating cookies
-cookies = EncryptedCookieManager(
+cookies_manager = EncryptedCookieManager(
     prefix="./mychefApp/",
     password=st.secrets["cookies_password"]
 )
-
 ######################## USER DATA ########################
 
 # Defining user class for session state variable
@@ -40,7 +39,7 @@ def fetch_user_info(email):
         # Establishing connection with database
         conn = init_connection()
         try:
-            user_db = conn.query(fetching_query, params={"email": email}, show_spinner=False)
+            user_db = conn.query(fetching_query, params={"email": email}, show_spinner=False, ttl=0)
             if not user_db.empty:
                 st.session_state.user_instance = User(
                     user_id=user_db["user_id"].iloc[0],
@@ -237,8 +236,8 @@ def authenticate():
                 # Fetching user info on db
                 if fetch_user_info(email=email):
                     if remember_me:
-                        cookies["logged_in_user"] = email
-                        cookies.save()
+                        cookies_manager["logged_in_user"] = email
+                        cookies_manager.save()
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
                     st.rerun()
@@ -249,9 +248,9 @@ def authenticate():
 
 def logout():
     # Delete all the items in Session state
-    if "logged_in_user" in cookies:
-        del cookies["logged_in_user"]
-        cookies.save()
+    if "logged_in_user" in cookies_manager:
+        del cookies_manager["logged_in_user"]
+        cookies_manager.save()
     for key in st.session_state.keys():
         del st.session_state[key]
     fetch_user_recipes.clear()

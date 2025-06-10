@@ -12,17 +12,12 @@ st.set_page_config(
     })
 
 import time # For demonstration of re-run pause
-from functions.authentication import authenticate, register, fetch_user_info, logout
-from streamlit_cookies_manager import EncryptedCookieManager
+from functions.authentication import authenticate, register, fetch_user_info, logout, cookies_manager
 
-# Instanciating cookies controller 
-cookies = EncryptedCookieManager(
-    prefix="./mychefApp/",
-    password=st.secrets["cookies_password"]
-)
-
+cookies = cookies_manager
 # Wait for the component to load cookies
 if not cookies.ready():
+    st.error("Cookies are not instanciated. Please reload the page or contact us at: admin@gkldevelopment.")
     st.stop()
 
 ss = st.session_state
