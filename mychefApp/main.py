@@ -36,7 +36,7 @@ if "authenticated" not in ss:
 
 # Verification of existing session
 if not ss["authenticated"]:
-    user_email_from_cookie = controller["logged_in_user"]
+    user_email_from_cookie = controller.get("logged_in_user")
     if user_email_from_cookie:
         # You might want to re-validate the user_id from the cookie with your backend
         # to ensure it's still a valid session/user. For simplicity, we're just
