@@ -41,7 +41,7 @@ def authenticate():
     elif st.session_state["tester_logged_in"]:
         return True
 
-recipe_insert, recipe_gen, cookies_manager = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef :cook:", "Cookies Manager :cookie:"]) 
+recipe_insert, recipe_gen, ingredients_insert, cookies_manager = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef :cook:", "Upload Ingredients 🛒", "Cookies Manager :cookie:"]) 
 if authenticate():
     # Testing SQL insertion
     with recipe_insert:
@@ -116,8 +116,12 @@ if authenticate():
             #                 sep='.',
             #                 errors='ignore'
             #             ))
+    with ingredients_insert:
+        st.subheader("Pushing ingredients to the database!")
+        st.text("Input as many incredients you want to push on the database. Make sure your ingredients are all comma-separated.")
+        st.text_area("Copy paste your list here:")
     with cookies_manager:
-        st.subheader("Cookies Manager 🍪")
+        st.subheader("Cookies manager 🍪")
         st.text("Manage cookies executing function rendering the current cookies stored in the app.")
         st.markdown("<br>", unsafe_allow_html=True)
         # st.divider()
