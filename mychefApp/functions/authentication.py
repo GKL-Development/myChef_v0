@@ -242,7 +242,7 @@ def authenticate(cookieController):
 
 def logout(cookieController):
     # Delete all the items in Session state
-    if "logged_in_user" in cookieController:
+    if cookieController.get("logged_in_user"):
         cookieController.remove("logged_in_user")
     for key in st.session_state.keys():
         del st.session_state[key]
