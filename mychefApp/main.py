@@ -18,7 +18,8 @@ from st_cookies_manager import EncryptedCookieManager
 ss = st.session_state
 controller = EncryptedCookieManager(
     prefix="./mychefApp/",
-    password=st.secrets["cookies_password"]
+    password=st.secrets["cookies_password"],
+    ignore_broken=True
 )
 
 if not controller.ready():

@@ -239,7 +239,7 @@ def authenticate():
                 # Fetching user info on db
                 if fetch_user_info(email=email):
                     if remember_me:
-                        controller["logged_in_user"] = email
+                        controller.set("logged_in_user", email)
                         controller.save() # To ensure cookies saving
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
