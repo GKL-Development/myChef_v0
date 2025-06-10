@@ -5,18 +5,12 @@ import pandas as pd # Check whether this makes app crash or not // if not then r
 import time
 from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
 from functions.connection import init_connection
-from streamlit_cookies_manager import EncryptedCookieManager
+from streamlit_cookies_controller import CookieController
 
-# Instanciating cookies
-def get_cookies_manager():
-    """
-    Returns the singleton instance of the EncryptedCookieManager.
-    The decorator ensures it's created only once per user session.
-    """
-    return EncryptedCookieManager(
-        prefix="mychefApp/",
-        password=st.secrets["cookies_password"]
-    )
+ss = st.session_state 
+
+controller = CookieController()
+
 ######################## USER DATA ########################
 
 # Defining user class for session state variable
@@ -171,9 +165,9 @@ def registration_dialog(email, password):
     "We want to get to know you a bit more before you can access the app.")
 
     # Prompting user for information
-    firstname = st.text_input("What is your firstname?")
-    lastname = st.text_input("What is your lastname?")
-    username = st.text_input("Enter a username:")
+    firstname = st.text_input("What is your firstname?", placeholder="Firstname")
+    lastname = st.text_input("What is your lastname?", placeholder="Lastname")
+    username = st.text_input("Enter a username:", placeholder="Username")
     birthdate = st.date_input("When's your birthdate?", value=None, min_value="1900-01-01")
     gender_choice = st.radio("What gender are you?",["Male", "Female", ":rainbow[Other]", "Don't Specify"])
     sex = gender_dict[gender_choice]
@@ -207,9 +201,9 @@ def register():
     # with st.("Not registered yet? Create an account now!"):
     # st.subheader("Not registered yet? Create an account now!")
     with st.form("Register", enter_to_submit=True):
-        email = st.text_input(label="Enter your email:", type="default").lower()
-        password = st.text_input(label="Enter your password:", type="password")
-        confirm_pwd = st.text_input(label="Confirm your password:", type="password")
+        email = st.text_input(label="Enter your email:", type="default", placeholder="Enter your email").lower()
+        password = st.text_input(label="Enter your password:", type="password", placeholder="Enter your password")
+        confirm_pwd = st.text_input(label="Confirm your password:", type="password", placeholder="Confirm your password")
         if st.form_submit_button("Register now!", use_container_width=True):    
             if password == confirm_pwd: 
                 registration_dialog(email=email, password=password)
@@ -220,8 +214,8 @@ def register():
 def authenticate():
     """User are being signed in after credential verification protocol with database user informations"""
     with st.form("Login", enter_to_submit=True):
-        email = st.text_input(label="Enter your email:", type="default").lower()
-        password = st.text_input(label="Enter your password:", type="password")
+        email = st.text_input(label="Enter your email:", type="default", placeholder="Enter your email").lower()
+        password = st.text_input(label="Enter your password:", type="password", placeholder="Enter your password")
         remember_me = st.checkbox("Remember Me")
         if st.form_submit_button("Login", use_container_width=True):
             if credentials(email=email, password=password):
@@ -241,8 +235,7 @@ def authenticate():
                 # Fetching user info on db
                 if fetch_user_info(email=email):
                     if remember_me:
-                        cookies_manager["logged_in_user"] = email
-                        cookies_manager.save()
+                        controller.set("logged_in_user", email)
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
                     st.rerun()
@@ -253,9 +246,8 @@ def authenticate():
 
 def logout():
     # Delete all the items in Session state
-    if "logged_in_user" in cookies_manager:
-        del cookies_manager["logged_in_user"]
-        cookies_manager.save()
+    if controller.get("logged_in_user"):
+        controller.remove("logged_in_user")
     for key in st.session_state.keys():
         del st.session_state[key]
     fetch_user_recipes.clear()
