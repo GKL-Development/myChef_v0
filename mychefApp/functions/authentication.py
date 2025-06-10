@@ -242,7 +242,8 @@ def authenticate(cookieController):
 
 def logout(cookieController):
     # Delete all the items in Session state
-    cookieController.remove("logged_in_user")
+    if "logged_in_user" in cookieController:
+        cookieController.remove("logged_in_user")
     for key in st.session_state.keys():
         del st.session_state[key]
     fetch_user_recipes.clear()
