@@ -12,12 +12,13 @@ st.set_page_config(
     })
 
 import time # For demonstration of re-run pause
-from functions.authentication import authenticate, register, fetch_user_info, logout, cookies_manager
+from functions.authentication import authenticate, register, fetch_user_info, logout, get_cookies_manager
 
-cookies = cookies_manager
+cookies = get_cookies_manager()
 # Wait for the component to load cookies
 if not cookies.ready():
-    st.error("Cookies are not instanciated. Please reload the page or contact us at: admin@gkldevelopment.")
+    st.warning("Cookies are not instanciated. Please wait.")
+    st.spinner("Loading...")
     st.stop()
 
 ss = st.session_state

@@ -8,10 +8,15 @@ from functions.connection import init_connection
 from streamlit_cookies_manager import EncryptedCookieManager
 
 # Instanciating cookies
-cookies_manager = EncryptedCookieManager(
-    prefix="./mychefApp/",
-    password=st.secrets["cookies_password"]
-)
+def get_cookies_manager():
+    """
+    Returns the singleton instance of the EncryptedCookieManager.
+    The decorator ensures it's created only once per user session.
+    """
+    return EncryptedCookieManager(
+        prefix="mychefApp/",
+        password=st.secrets["cookies_password"]
+    )
 ######################## USER DATA ########################
 
 # Defining user class for session state variable
