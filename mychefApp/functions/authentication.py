@@ -5,11 +5,15 @@ import pandas as pd # Check whether this makes app crash or not // if not then r
 import time
 from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
 from functions.connection import init_connection
-from streamlit_cookies_controller import CookieController
-
+from st_cookies_manager import EncryptedCookieManager
 
 ss = st.session_state 
-controller = CookieController()
+# Initialize the cookie manager
+controller = EncryptedCookieManager(
+    prefix="./mychefApp/",
+    password=st.secrets["cookies_password"]
+)
+
 
 ######################## USER DATA ########################
 
@@ -235,7 +239,8 @@ def authenticate():
                 # Fetching user info on db
                 if fetch_user_info(email=email):
                     if remember_me:
-                        controller.set("logged_in_user", email)
+                        controller["logged_in_user"] = email
+                        controller.save() # To ensure cookies saving
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
                     st.rerun()
@@ -246,8 +251,9 @@ def authenticate():
 
 def logout():
     # Delete all the items in Session state
-    if controller.get("logged_in_user"):
-        controller.remove("logged_in_user")
+    if "logged_in_user" in controller:
+        del controller["logged_in_user"]
+        controller.save() # Save cookies deletion
     for key in st.session_state.keys():
         del st.session_state[key]
     fetch_user_recipes.clear()

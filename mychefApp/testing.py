@@ -4,9 +4,12 @@ import pandas as pd
 import json, time
 from ai_api.recipeGenerator import gemini_ai_api
 from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
-from streamlit_cookies_controller import CookieController
+from st_cookies_manager import EncryptedCookieManager
 
-controller = CookieController()
+controller = EncryptedCookieManager(
+    prefix="./mychefApp/",
+    password=st.secrets["cookies_password"]
+)
 
 # Defining default prompt text - no restrictions
 prompt_text = """Number of recipes: 7
@@ -125,10 +128,10 @@ if authenticate():
         st.divider()
         st.write("**Get All** cookies in session:")
         if st.button("Get All", key="getAll"):
-            st.write(f"Current cookies: {controller.getAll()}")
+            st.write(f"Current cookies: {controller}")
         st.markdown("<br>", unsafe_allow_html=True)
         st.write("**Get Input Name** cookie in session:")
         cookie_desired = st.text_input("Cookie to retrieve", placeholder="For example: logged_in_user")
         if st.button("Get Cookie", key="getCookie"):
-            st.write(f"Desired cookie: {controller.get(cookie_desired)}")
+            st.write(f"Desired cookie: {controller[cookie_desired]}")
             
