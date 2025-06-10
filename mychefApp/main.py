@@ -15,9 +15,8 @@ import time # For demonstration of re-run pause
 from functions.authentication import authenticate, register, fetch_user_info, logout
 from streamlit_cookies_controller import CookieController
 
-controller = CookieController()
-
 ss = st.session_state
+controller = CookieController()
 
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")

@@ -7,8 +7,8 @@ from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_r
 from functions.connection import init_connection
 from streamlit_cookies_controller import CookieController
 
-ss = st.session_state 
 
+ss = st.session_state 
 controller = CookieController()
 
 ######################## USER DATA ########################

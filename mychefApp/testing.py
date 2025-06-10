@@ -1,9 +1,9 @@
 # Importing dependencies
 import streamlit as st
-from ai_api.recipeGenerator import gemini_ai_api
-from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 import pandas as pd
 import json, time
+from ai_api.recipeGenerator import gemini_ai_api
+from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 from streamlit_cookies_controller import CookieController
 
 controller = CookieController()
@@ -123,11 +123,11 @@ if authenticate():
         st.text("Manage cookies executing function rendering the current cookies stored in the app.")
         st.markdown("<br>", unsafe_allow_html=True)
         st.divider()
-        st.text("**Get All** cookies in session:")
+        st.write("**Get All** cookies in session:")
         if st.button("Get All", key="getAll"):
             st.write(f"Current cookies: {controller.getAll()}")
         st.markdown("<br>", unsafe_allow_html=True)
-        st.text("**Get Input Name** cookie in session:")
+        st.write("**Get Input Name** cookie in session:")
         cookie_desired = st.text_input("Cookie to retrieve", placeholder="For example: logged_in_user")
         if st.button("Get Cookie", key="getCookie"):
             st.write(f"Desired cookie: {controller.get(cookie_desired)}")
