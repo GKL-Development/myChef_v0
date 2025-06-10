@@ -115,12 +115,12 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         sex,
         birthdate,
         email,
-        lastmeal,
         password,
         username,
         allergens,
         diet,
-        dislikes
+        dislikes,
+        lastmeal
         )
         VALUES (
         DEFAULT,
@@ -129,9 +129,9 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         :sex,
         :birthdate,
         :email,
-        NULL,
         :password,
         :username,
+        NULL,
         NULL,
         NULL,
         NULL
@@ -143,7 +143,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
             s.execute(text(registration_query), usr_variable_dict)
             s.commit()
         except Exception as e:
-            st.error(f"Invalid credentials provided... Please try again or contact us.")
+            st.error(f"Invalid credentials provided... Please try again or contact us. {e}")
             st.stop()
     return True
 
