@@ -13,19 +13,10 @@ st.set_page_config(
 
 import time # For demonstration of re-run pause
 from functions.authentication import authenticate, register, fetch_user_info, logout
-from st_cookies_manager import EncryptedCookieManager
+from streamlit_cookies_controller import CookieController
 
 ss = st.session_state
-controller = EncryptedCookieManager(
-    prefix="./mychefApp/",
-    password=st.secrets["cookies_password"],
-    ignore_broken=True
-)
-
-if not controller.ready():
-    # Wait for the component to load and send us current cookies.
-    st.spinner("Loading cookies...")
-    st.stop()
+controller = CookieController()
 
 # Logo image
 st.logo("./img/logo/row_no_sentence.png", size = "large")
@@ -60,7 +51,7 @@ if ss["authenticated"]:
     if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
         st.sidebar.warning("Not yet live. Come back in a couple of days!")
     if st.sidebar.button("Logout", use_container_width=True, type="primary", key="logout"):
-        if logout():
+        if logout(controller):
             st.sidebar.success("You have been logged out.")
             time.sleep(1)
             st.rerun() 
@@ -111,7 +102,7 @@ else:
         st.text("Your weekly meal planner to make cooking meals enjoyable!")
         signIn, signUp = st.tabs(["Sign-In :unlock:", "Sign-Up :receipt:"])
         with signIn:
-            authenticate()
+            authenticate(controller)
         with signUp:
             register()
     # st.link_button("Intagram", url="https://www.instagram.com/mychef.be/", type='tertiary', icon='🔗', use_container_width=False)
