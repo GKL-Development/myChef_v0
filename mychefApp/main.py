@@ -12,14 +12,10 @@ st.set_page_config(
     })
 
 import time # For demonstration of re-run pause
-from functions.authentication import authenticate, register, fetch_user_info, logout, get_cookies_manager
+from functions.authentication import authenticate, register, fetch_user_info, logout
+from streamlit_cookies_controller import CookieController
 
-cookies = get_cookies_manager()
-# Wait for the component to load cookies
-if not cookies.ready():
-    st.warning("Cookies are not instanciated. Please wait.")
-    st.spinner("Loading...")
-    st.stop()
+controller = CookieController()
 
 ss = st.session_state
 
@@ -33,7 +29,7 @@ if "authenticated" not in ss:
 
 # Verification of existing session
 if not ss["authenticated"]:
-    user_email_from_cookie = cookies.get("logged_in_user")
+    user_email_from_cookie = controller.get("logged_in_user")
     if user_email_from_cookie:
         # You might want to re-validate the user_id from the cookie with your backend
         # to ensure it's still a valid session/user. For simplicity, we're just

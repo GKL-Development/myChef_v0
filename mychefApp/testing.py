@@ -4,6 +4,9 @@ from ai_api.recipeGenerator import gemini_ai_api
 from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 import pandas as pd
 import json, time
+from streamlit_cookies_controller import CookieController
+
+controller = CookieController()
 
 # Defining default prompt text - no restrictions
 prompt_text = """Number of recipes: 7
@@ -40,7 +43,7 @@ def authenticate():
     elif st.session_state["tester_logged_in"]:
         return True
 
-recipe_insert, recipe_gen = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef :cook:"]) 
+recipe_insert, recipe_gen, cookies_manager = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef :cook:", "Cookies Manager :cookie:"]) 
 if authenticate():
     # Testing SQL insertion
     with recipe_insert:
@@ -115,3 +118,17 @@ if authenticate():
             #                 sep='.',
             #                 errors='ignore'
             #             ))
+    with cookies_manager:
+        st.subheader("Cookies Manager 🍪")
+        st.text("Manage cookies executing function rendering the current cookies stored in the app.")
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.divider()
+        st.text("**Get All** cookies in session:")
+        if st.button("Get All", key="getAll"):
+            st.write(f"Current cookies: {controller.getAll()}")
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.text("**Get Input Name** cookie in session:")
+        cookie_desired = st.text_input("Cookie to retrieve", placeholder="For example: logged_in_user")
+        if st.button("Get Cookie", key="getCookie"):
+            st.write(f"Desired cookie: {controller.get(cookie_desired)}")
+            
