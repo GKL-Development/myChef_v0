@@ -14,7 +14,7 @@ with st.container():
 st.divider()
 
 # Defining CSS rules
-st.markdown(
+st.html(
     """
     <style>
     /* Target images specifically within the 'stImage' container */
@@ -37,9 +37,13 @@ st.markdown(
         justify-content: space-between;
     }
 
+    # div.stButton > button {
+    #     max-width: 300px;
+    #     width: 100%;
+    #     margin: 0 50% 0 50%
+    # }
     </style>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 # Meal content starts here
@@ -52,14 +56,14 @@ if lastMeal is not None:
         st.subheader('Your Weekly Meals!')
         st.text(f'Never miss a meal with our highly personnalized planner and enjoy cooking seasonal ingredients with your own style!')
         st.write(f"**Week: {mealWeek}**")
-        st.markdown("""<br>""", unsafe_allow_html=True)
+        st.html("<br>")
         mealCards()
     else:
         # Defining page header
         st.subheader('No Meals Generated Yet...')
         st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
         st.write(f"**Week: {mealWeek}**")
-        st.markdown("""<br>""", unsafe_allow_html=True)
+        st.html("<br>")
         if "preferences" not in st.session_state:
             if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
                 selectMealPref()
@@ -68,4 +72,5 @@ if lastMeal is not None:
 else:
     st.subheader("Welcome to MyChef!")
     st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
-    st.text("Start the form whenever you are ready!")
+    st.html("<br>")
+    st.button("Enter the Preferences Form", use_container_width=True, key='preferences', type='secondary')

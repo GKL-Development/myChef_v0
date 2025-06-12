@@ -38,6 +38,7 @@ if not ss["authenticated"]:
             ss["email"] = user_email_from_cookie
         else:
             st.error("Failed to fetch user information after registration. Please try logging in manually.")
+            time.sleep(2)
         st.success(f"Welcome back, {ss.user_instance.firstName}!")
         time.sleep(2) # A small pause before rerunning to update UI
         st.rerun()

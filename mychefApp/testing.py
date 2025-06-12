@@ -49,7 +49,7 @@ if authenticate():
         "Now the function will not only store the recipes in the db but also store the ingredients list for these recipes.")
         st.subheader("Recipes insertion to database")
         st.text("Fill up the text area with the JSON output of a recipe and your userID and press the button to insert this recipe to the database")
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.html("<br>")
         json_txt = st.text_area("Input a JSON string here...", height=150, max_chars=None)
         userId = st.number_input("Insert your User ID", value=None, placeholder="User ID")
         if st.button("Insert JSON recipes to SQL", use_container_width=True, icon="📩"):
@@ -69,7 +69,7 @@ if authenticate():
         st.subheader("Try MyChef")
         st.write("Generate a weekly plan using **MyChef**. " \
         "The given pre-filled text is an elaborate _Generative AI_ prompt that is meant to provide enough instructions to MyChef to generate meals for your week.")
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.html("<br>")
         prompt = st.text_area("Prompt MyChef:", value=prompt_text, height=320, max_chars=None)
         creativity = st.slider("Handle MyChef creativity:", 0, 10, 8)
         if st.button("Let MyChef cook!", use_container_width=True, icon="🥘", key="generateRecipesTest"):
@@ -120,15 +120,17 @@ if authenticate():
         st.subheader("Pushing ingredients to the database!")
         st.text("Input as many incredients you want to push on the database. Make sure your ingredients are all comma-separated.")
         st.text_area("Copy paste your list here:")
+        if st.button("Push Ingredients", icon='👨🏻‍🍳🎛', key='ingredients_push'):
+            st.warning("Not working")# To use the insert ingredient function
     with cookies_manager:
         st.subheader("Cookies manager 🍪")
         st.text("Manage cookies executing function rendering the current cookies stored in the app.")
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.html("<br>")
         # st.divider()
         # st.write("**Get All** cookies in session:")
         # if st.button("Get All", key="getAll"):
         #     st.write(f"Current cookies: {controller}")
-        # st.markdown("<br>", unsafe_allow_html=True)
+        # st.html("<br>")
         # st.write("**Get Input Name** cookie in session:")
         # cookie_desired = st.text_input("Cookie to retrieve", placeholder="For example: logged_in_user")
         # if st.button("Get Cookie", key="getCookie"):
