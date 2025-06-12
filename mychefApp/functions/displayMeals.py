@@ -37,7 +37,7 @@ def mealCards():
                 with cols[i]:
                     st.subheader(weekDays[current_col])
                     st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'], use_container_width=True, width=300)
-                    st.markdown(f"{":green-badge[:material/check: Allergen Free]" if "None" in weeklyPlan[current_col]['allergens'] else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens']}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime']}]")
+                    st.markdown(f"{":green-badge[:material/check: Allergen Free]" if "None" in weeklyPlan[current_col]['allergens'].strip("{}").capitalize() else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip("{}").capitalize()}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime']}]")
                     recipe_details = st.button("Cook Now!", key=weeklyPlan[current_col]['meal_id'], use_container_width=True)
                     if recipe_details:
                         st.warning("Not functional yet. Try again later.")

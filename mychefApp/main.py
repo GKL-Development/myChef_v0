@@ -66,7 +66,7 @@ if ss["authenticated"]:
         "MyChef":[
             st.Page(
                 "dashboard.py",
-                title='Dashboard',
+                title='Meals',
                 icon="🏠",
                 default=True
             ),

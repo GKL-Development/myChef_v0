@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import date
 from functions.generateMealPlan import generateMealPlan, selectMealPref
 from functions.displayMeals import mealCards
+from functions.askUserPreferences import askUserPreferences
 
 ####################################### Dashboard ####################################################
 ss = st.session_state
@@ -55,22 +56,24 @@ if lastMeal is not None:
         # Defining page header
         st.subheader('Your Weekly Meals!')
         st.text(f'Never miss a meal with our highly personnalized planner and enjoy cooking seasonal ingredients with your own style!')
-        st.write(f"**Week: {mealWeek}**")
         st.html("<br>")
         mealCards()
+elif lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
+    # Defining page header
+    st.subheader('No Meals Generated Yet...')
+    st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
+    st.html("<br>")
+    if "preferences" not in st.session_state:
+        if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
+            selectMealPref()
     else:
-        # Defining page header
-        st.subheader('No Meals Generated Yet...')
-        st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
-        st.write(f"**Week: {mealWeek}**")
-        st.html("<br>")
-        if "preferences" not in st.session_state:
-            if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
-                selectMealPref()
-        else:
-            generateMealPlan(ss.user_instance.user_id)
+        generateMealPlan(ss.user_instance.user_id)
 else:
     st.subheader("Welcome to MyChef!")
     st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
     st.html("<br>")
-    st.button("Enter the Preferences Form", use_container_width=True, key='preferences', type='secondary')
+    if st.button("Enter the Preferences Form", use_container_width=True, key='prefBtn', type='secondary'):
+        askUserPreferences()
+        
+
+        

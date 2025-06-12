@@ -79,7 +79,8 @@ def databaseRecipesStorage(recipesData, userId=1):
                 s.commit()
                 # st.success(f"Successfully inserted {len(recipes)} recipes for User ID: {1}") // Not needed for user use
             except Exception as e:
-                st.error(f"The following error occured during insertion to database: {e}")
+                st.error("An error occured. Please contact us: admin@gkldevelopment.com")
+                st.error(e)
                 s.rollback()
         return meal_id_dict
     else:
@@ -151,7 +152,49 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
                 s.commit()
                 return True
             except Exception as e:
-                st.error(f"An error occured: {e}")
+                st.error("An error occured. Please contact us: admin@gkldevelopment.com")
+                st.error(e)
                 s.rollback()
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
+
+def pushPreferences(technique, diet, allergens, dislikes, efforts, userId):
+    """
+    Pushing preferences into user table.
+    """
+    if userId:
+        variables_dict = {
+            "allergens": allergens,
+            "diet": diet,
+            "dislikes": dislikes,
+            "cooking_efforts": efforts,
+            "cooking_technique": technique,
+            "user_id": userId
+        }
+
+        preferencesQuery = ("""
+            UPDATE users
+            SET
+                allergens = :allergens,
+                diet = :diet,
+                dislikes = :dislikes,
+                cooking_efforts = :cooking_efforts,
+                cooking_technique = :cooking_technique,
+                haspref = 'True'
+            WHERE 
+                user_id = :user_id
+        """)
+        # Establishing connection with database
+        conn = init_connection()
+        with conn.session as s:
+            try:
+                s.execute(text(preferencesQuery), params=variables_dict)
+                s.commit()
+                return True
+            except Exception as e:
+                st.error("An error occured. Please contact us: admin@gkldevelopment.com")
+                st.error(e)
+                s.rollback()
+                st.stop()
+    else:
+        st.error("Invalid UserId, please contact us: admin@gkldevelopment.com")

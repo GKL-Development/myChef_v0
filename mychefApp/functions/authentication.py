@@ -11,7 +11,7 @@ ss = st.session_state
 
 # Defining user class for session state variable
 class User:
-    def __init__(self, user_id, firstName, lastName, sex, birthdate, email, userName, userAllerg=None, userDislike=None, userDiet=None, lastMeal=None):
+    def __init__(self, user_id, firstName, lastName, sex, birthdate, email, userName, lastMeal=None, hasPref=False):
         self.user_id = user_id
         self.firstName = firstName
         self.lastName = lastName
@@ -19,17 +19,36 @@ class User:
         self.birthdate = birthdate
         self.email = email
         self.userName = userName
-        self.userAllerg = userAllerg
-        self.userDiet= userDiet
-        self.userDislike = userDislike
         self.lastMeal = lastMeal
+        self.hasPref = hasPref
 
 def fetch_user_info(email):
     """Fetch user information in the database to enrich 
     st.session_state.user_instance with the User class"""
     if email:
         fetching_query = ("""
-            SELECT user_id, firstname, lastname, sex, birthdate, email, username, allergens, diet, dislikes, lastmeal FROM users WHERE email = :email
+            SELECT 
+                user_id, 
+                firstname, 
+                lastname, 
+                sex, 
+                birthdate, 
+                email, 
+                username, 
+                allergens, 
+                diet, 
+                dislikes, 
+                lastmeal, 
+                haspref, 
+                allergens, 
+                diet, 
+                dislikes, 
+                cooking_technique, 
+                cooking_efforts 
+            FROM 
+                users 
+            WHERE 
+                email = :email
         """)
         # Establishing connection with database
         conn = init_connection()
@@ -44,11 +63,16 @@ def fetch_user_info(email):
                     birthdate=user_db['birthdate'].iloc[0],
                     email=user_db['email'].iloc[0],
                     userName=user_db['username'].iloc[0],
-                    userAllerg=user_db["allergens"].iloc[0], 
-                    userDiet=user_db["diet"].iloc[0], 
-                    userDislike=user_db["dislikes"].iloc[0], 
-                    lastMeal=user_db["lastmeal"].iloc[0]
+                    lastMeal=user_db["lastmeal"].iloc[0],
+                    hasPref=user_db['haspref'].iloc[0]
                 )
+                st.session_state.preferences = {
+                    "technique" : user_db["cooking_technique"].iloc[0],
+                    "diet" : user_db["diet"].iloc[0],
+                    "allergy" : user_db["allergens"].iloc[0],
+                    "dislikes" : user_db["dislikes"].iloc[0],
+                    "efforts" : user_db["cooking_efforts"].iloc[0]
+                }
                 return True
             else:
                 st.error("User not found in the database")
@@ -120,7 +144,10 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         allergens,
         diet,
         dislikes,
-        lastmeal
+        lastmeal,
+        cooking_efforts,
+        cooking_technique,
+        haspref
         )
         VALUES (
         DEFAULT,
@@ -131,6 +158,9 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         :email,
         :password,
         :username,
+        NULL,
+        NULL,
+        NULL,
         NULL,
         NULL,
         NULL,
@@ -230,8 +260,7 @@ def authenticate(cookieController):
                 st.success("Logged in successfully!")
                 # Fetching user info on db
                 if fetch_user_info(email=email):
-                    if remember_me:
-                        cookieController.set("logged_in_user", email)
+                    cookieController.set("logged_in_user", email)
                     st.session_state["authenticated"] = True
                     st.session_state["email"] = email
                     st.rerun()

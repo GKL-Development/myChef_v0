@@ -1,5 +1,6 @@
 [client]
-toolbarMode = "auto"
+toolbarMode = "minimal"
+showErrorDetails = "none"
 
 [theme]
 primaryColor="#4a694b"
