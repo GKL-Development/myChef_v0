@@ -1,6 +1,10 @@
 import streamlit as st
+from functions.askUserPreferences import askUserPreferences
+from functions.authentication import fetch_user_info
 
 ss_user = st.session_state.user_instance
+ss_pref = st.session_state.preferences
+required_keys = {"technique", "diet", "allergy", "dislikes", "efforts"}
 
 ####################################### Profile ####################################################
 st.title(f"{ss_user.firstName}'s profile 👤")
@@ -34,6 +38,12 @@ with info:
 with food_pref:
     # Food preferences
     st.subheader("Food Preferences:")
+    if required_keys.isdisjoint(ss_pref):
+        st.write("It seems like you never set your preferences for your eating habits. Click the button below to set this up!")
+        if st.button("Let us know more about you!", key="selectPrefOnProfile", type="primary"):
+            askUserPreferences()
+            if not fetch_user_info():
+                st.warning("Failed to fetch updated informations. Please consider refreshing the web page.")
 
 # Save and commit changes to db
 st.divider()

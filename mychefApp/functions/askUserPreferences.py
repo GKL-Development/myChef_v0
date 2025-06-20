@@ -84,7 +84,7 @@ def askUserPreferences():
             if pushPreferences(sep.join(technique), sep.join(diet), sep.join(allergens), sep.join(dislikes), efforts, int(ss.user_instance.user_id)):
                 time.sleep(2)
                 status.update(label="Upload completed", state="complete", expanded=False)
-                ss["userPref"] = True
+                ss.userPref = True
                 st.rerun()
             else:
                 status.update(label="Failed to upload", state="error", expanded=False)

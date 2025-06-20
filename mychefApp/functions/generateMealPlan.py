@@ -36,7 +36,7 @@ def selectMealPref():
 
     # Submitting preferences 
     if st.button("Generate Now!", use_container_width=True, type='primary'):
-        st.session_state["preferences"] = {
+        st.session_state["mealPreferences"] = {
             "days": days,
             "total_time": total_time,
             "adults": adults,
@@ -50,20 +50,20 @@ def generateMealPlan(userId):
 
     user = int(userId)
     ss = st.session_state
-    ssp = ss["preferences"]
+    ssp = ss["mealPreferences"]
     # Crafting prompt
     prompt_text = f"""
     Number of recipes: {7 if len(ssp["days"]) == 0 else len(ssp["days"])}
-    Cooking technique focus: {ss.preferences.technique}
-    Dietary preferences: {ss.preferences.diet}
-    Allergy Constraints: {ss.preferences.allergy}
-    Disliked Ingredients: {ss.preferences.dislikes}
+    Cooking technique focus: {ss.preferences['technique']}
+    Dietary preferences: {ss.preferences['diet']}
+    Allergy Constraints: {ss.preferences['allergy']}
+    Disliked Ingredients: {ss.preferences['dislikes']}
     Seasonal/Regional Focus: Early summer in Europe.
     Household Composition: {ssp["adults"]} adults, {ssp["childs"] if ssp["childs"] is not None else 0} child
     Meal Type: Dinner
     Maximum Total Time: {ssp["total_time"]}.
     Budget Consideration: {ssp["budget"]}.
-    Suitability/Effort Level: {ss.preferences.efforts}
+    Suitability/Effort Level: {ss.preferences['efforts']}
     Meal to Avoid: None
     Maximum % of Recipes with Meat/Fish: 40"""
 

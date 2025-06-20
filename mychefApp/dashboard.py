@@ -50,24 +50,29 @@ st.html(
 # Meal content starts here
 today = date.today() # Defining today date
 todayYear, todayWeek, _ = today.isocalendar() # retrieving today week and year
-if lastMeal is not None:
-    mealYear, mealWeek, _ = lastMeal.isocalendar() # Retrieving year and weekNum from user lastMeal generation date
+# if lastMeal is not None:
+if lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
+    try:
+        mealYear, mealWeek, _ = lastMeal.isocalendar() # Retrieving year and weekNum from user lastMeal generation date
+    except Exception as e:
+        print('User has never generated meal')
     if mealWeek == todayWeek and mealYear == todayYear:
         # Defining page header
         st.subheader('Your Weekly Meals!')
         st.text(f'Never miss a meal with our highly personnalized planner and enjoy cooking seasonal ingredients with your own style!')
         st.html("<br>")
         mealCards()
-elif lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
-    # Defining page header
-    st.subheader('No Meals Generated Yet...')
-    st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
-    st.html("<br>")
-    if "preferences" not in st.session_state:
-        if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
-            selectMealPref()
     else:
-        generateMealPlan(ss.user_instance.user_id)
+# elif lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
+        # Defining page header
+        st.subheader('No Meals Generated Yet...')
+        st.text("Let's see what on MyChef has planned for you this week! Click the button below to generate your meals and your shopping list.")
+        st.html("<br>")
+        if "mealPreferences" not in st.session_state:
+            if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
+                selectMealPref()
+        else:
+            generateMealPlan(ss.user_instance.user_id)
 else:
     st.subheader("Welcome to MyChef!")
     st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
