@@ -21,15 +21,13 @@ else :
     with st.container():
         ingredients = fetch_recipes_ingredients(ss.user_instance.user_id, ss.recipesId)
         for i in range(len(ingredients)):
-            # ingredient = str(int(ingredients['quantity'].iloc[i]) if ingredients['quantity'].iloc[i] != 0 else "") + " " + ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i].split(", ")[0]
-            # st.checkbox(ingredient, key=i)
             # Formatizing ingredients display in shopping list
             if ingredients['unit'].iloc[i] in ("tablespoon", "tablespoons", "teaspoon", "teaspoons", "cup", "cups"):
-                ingredient = ingredients['ingredient_name'].iloc[i].split(", ")[0]
+                ingredient = ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
             elif ingredients['quantity'].iloc[i] != 0:
-                ingredient = str(int(ingredients['quantity'].iloc[i])) + " " + ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i].split(", ")[0]
+                ingredient = str(int(ingredients['quantity'].iloc[i])) + " " + ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
             else: 
-                ingredient = ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i].split(", ")[0]
+                ingredient = ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
             # Returning ingredient checkbox
             st.checkbox(ingredient, key=i)
 

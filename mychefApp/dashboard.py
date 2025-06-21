@@ -1,12 +1,14 @@
 import streamlit as st
 from datetime import date
 from functions.generateMealPlan import generateMealPlan, selectMealPref
-from functions.displayMeals import mealCards
+from functions.displayMeals import mealCards, instructions
 from functions.askUserPreferences import askUserPreferences
 
 ####################################### Dashboard ####################################################
 ss = st.session_state
 lastMeal = st.session_state.user_instance.lastMeal
+if "selected_meal" not in st.session_state:
+    ss.selected_meal = None
 # Header
 with st.container():
     st.title(f'''Hello {st.session_state.user_instance.firstName} 🔆''', anchor=False)
@@ -28,8 +30,8 @@ st.html(
     }
 
     div[data-testid="stColumn"] {
-        background-color: #f5f1e6;
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+        background-color: #FCFBF4;
+        box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #c5c5c5;
         text-align: center;
         border-radius: 8px;
@@ -57,11 +59,10 @@ if lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True
     except Exception as e:
         print('User has never generated meal')
     if mealWeek == todayWeek and mealYear == todayYear:
-        # Defining page header
-        st.subheader('Your Weekly Meals!')
-        st.text(f'Never miss a meal with our highly personnalized planner and enjoy cooking seasonal ingredients with your own style!')
-        st.html("<br>")
-        mealCards()
+        if ss.selected_meal:
+            instructions(ss.selected_meal)
+        else:
+            mealCards()
     else:
 # elif lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
         # Defining page header
