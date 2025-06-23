@@ -22,7 +22,7 @@ def instructions(col):
     st.image('./img/weeklyMealImg/placeholder.jpg', caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
     st.markdown(f"""
                 {":green-badge[:material/check: Allergen Free]" 
-                if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() 
+                if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() or mealPlan['allergens'] == "{}"
                 else f":orange-badge[⚠️{mealPlan['allergens'].strip('{}"').split()[0].capitalize()}]"} 
                 :blue-badge[🕒 Ready in {mealPlan['totaltime'].split(" (")[0]}]
                 """)
@@ -83,7 +83,7 @@ def mealCards():
                     st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
                     st.markdown(
                         f"""{":green-badge[:material/check: Allergen Free]" 
-                             if "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() 
+                             if "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() or weeklyPlan[current_col]['allergens'] == "{}"
                              else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} 
                              :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]
                              """)
