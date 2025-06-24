@@ -161,7 +161,7 @@ def registration_protocol(email, password, firstname, lastname, sex, birthdate, 
         NULL,
         NULL,
         NULL,
-        NULL,
+        '1970-01-01',
         NULL,
         NULL,
         NULL

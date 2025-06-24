@@ -72,6 +72,7 @@ if lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True
             else:
                 generateMealPlan(ss.user_instance.user_id)
     except Exception as e:
+        print(e)
         print('User has never generated meal')
 else:
     st.subheader("Welcome to MyChef!")

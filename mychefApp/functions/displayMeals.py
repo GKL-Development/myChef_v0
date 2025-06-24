@@ -77,16 +77,11 @@ def mealCards():
         if column_in_row > 0: # Creates a new row only if they are still columns to be processed
             cols = st.columns(column_in_row, vertical_alignment='top')
             for i in range(column_in_row):
-                row = current_col
                 with cols[i]:
+                    row = current_col
                     st.subheader(weekDays[current_col])
                     st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
-                    st.markdown(
-                        f"""{":green-badge[:material/check: Allergen Free]" 
-                             if "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() or weeklyPlan[current_col]['allergens'] == "{}"
-                             else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} 
-                             :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]
-                             """)
+                    st.markdown(f"""{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "{}" or "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]""")
                     recipe_details = st.button("Cook Now!", key=weeklyPlan[current_col]['meal_id'], use_container_width=True, type="primary")
                     if recipe_details:
                         ss.selected_meal = str(row)
