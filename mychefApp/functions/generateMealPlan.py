@@ -1,6 +1,5 @@
 import streamlit as st
 import time, json
-from datetime import date
 from ai_api.recipeGenerator import gemini_ai_api
 from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 from functions.authentication import fetch_user_info

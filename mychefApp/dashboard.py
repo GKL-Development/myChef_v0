@@ -53,7 +53,13 @@ st.html(
 today = date.today() # Defining today date
 todayYear, todayWeek, _ = today.isocalendar() # retrieving today week and year
 # if lastMeal is not None:
-if lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True':
+if lastMeal == '1970-01-01':
+    st.subheader("Welcome to MyChef!")
+    st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
+    st.html("<br>")
+    if st.button("Enter the Preferences Form", use_container_width=True, key='prefBtn', type='secondary'):
+        askUserPreferences()
+else:
     try:
         mealYear, mealWeek, _ = lastMeal.isocalendar() # Retrieving year and weekNum from user lastMeal generation date
         if mealWeek == todayWeek and mealYear == todayYear:
@@ -74,12 +80,6 @@ if lastMeal is not None or "userPref" in ss or ss.user_instance.hasPref == 'True
     except Exception as e:
         print(e)
         print('User has never generated meal')
-else:
-    st.subheader("Welcome to MyChef!")
-    st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
-    st.html("<br>")
-    if st.button("Enter the Preferences Form", use_container_width=True, key='prefBtn', type='secondary'):
-        askUserPreferences()
         
 
         
