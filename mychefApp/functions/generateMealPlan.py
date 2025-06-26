@@ -105,4 +105,5 @@ def generateMealPlan(userId):
         st.rerun()
     except Exception as e:
         st.error("We couldn't generate your meal. Please try again or contact us: admin@gkldevelopment.com")
+        print(e)
         st.stop()
