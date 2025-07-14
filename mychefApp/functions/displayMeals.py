@@ -20,12 +20,23 @@ def instructions(col):
         st.rerun()
     st.subheader(mealPlan['recipetitle'])
     st.image('./img/weeklyMealImg/placeholder.jpg', caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
-    st.markdown(f"""
-                {":green-badge[:material/check: Allergen Free]" 
-                if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() or mealPlan['allergens'] == "{}"
-                else f":orange-badge[⚠️{mealPlan['allergens'].strip('{}"').split()[0].capitalize()}]"} 
-                :blue-badge[🕒 Ready in {mealPlan['totaltime'].split(" (")[0]}]
-                """)
+    # st.markdown(f'''
+    #             {":green-badge[:material/check: Allergen Free]" 
+    #              if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() or mealPlan['allergens'] == "{}" 
+    #              else f":orange-badge[⚠️{mealPlan['allergens'].strip('{}"').split()[0].capitalize()}]"} 
+    #              :blue-badge[🕒 Ready in {mealPlan['totaltime'].split(" (")[0]}]''')
+
+    ##### Simplifying the markdown string due to error of unterminated f-string #####
+    allergens_str = mealPlan.get('allergens', '').strip('{}"') 
+    if not allergens_str or 'none' in allergens_str.lower():
+        allergen_badge = ":green-badge[:material/check: Allergen Free]"
+    else:
+        first_allergen = allergens_str.split()[0].capitalize()
+        allergen_badge = f":orange-badge[⚠️{first_allergen}]"
+    time_str = mealPlan.get('totaltime', 'N/A').split(" (")[0]
+    time_badge = f":blue-badge[🕒 Ready in {time_str}]"
+    st.markdown(f"{allergen_badge} {time_badge}")
+
     ing, rec = st.tabs(["Ingredients", "Instructions"])
     with ing:
         st.html("<h2>Requirements & Ingredients:</h2>")
@@ -81,7 +92,19 @@ def mealCards():
                     row = current_col
                     st.subheader(weekDays[current_col])
                     st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
-                    st.markdown(f"""{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "{}" or "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]""")
+                    # st.markdown(f"""{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "{}" or "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]""")
+                    
+                    ##### Simplifying the markdown string due to error of unterminated f-string #####
+                    allergens_str = weeklyPlan[current_col].get('allergens', '').strip('{}"') 
+                    if not allergens_str or 'none' in allergens_str.lower():
+                        allergen_badge = ":green-badge[:material/check: Allergen Free]"
+                    else:
+                        first_allergen = allergens_str.split()[0].capitalize()
+                        allergen_badge = f":orange-badge[⚠️{first_allergen}]"
+                    time_str = weeklyPlan[current_col].get('totaltime', 'N/A').split(" (")[0]
+                    time_badge = f":blue-badge[🕒 Ready in {time_str}]"
+                    st.markdown(f"{allergen_badge} {time_badge}")
+
                     recipe_details = st.button("Cook Now!", key=weeklyPlan[current_col]['meal_id'], use_container_width=True, type="primary")
                     if recipe_details:
                         ss.selected_meal = str(row)
