@@ -1,8 +1,14 @@
 import streamlit as st
 import time, json
 from ai_api.recipeGenerator import gemini_ai_api
-from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
+from ai_api.imageGenerator import imageGenerator, uploadImageToCloud
+from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage, databaseImageStorage
 from functions.authentication import fetch_user_info
+from functions.connection import configure_cloudinary
+import requests
+import psycopg2
+from psycopg2 import sql
+import os
 
 ############################## GENERATE MEAL PLAN ##############################
 
@@ -44,6 +50,13 @@ def selectMealPref():
             "creativity": creativity
             }
         st.rerun()
+def generateImage(meal_id):
+    """
+    Orchestrates the entire process of image generation: generate, upload, store link.
+    """
+    configure_cloudinary()
+    image_data = imageGenerator()
+    return
 
 def generateMealPlan(userId):
 
@@ -99,6 +112,8 @@ def generateMealPlan(userId):
             else:
                 status.update(label="Failed to save your meal plan. Please try again", state="error", expanded=False)
                 st.stop()
+            # Generating Meals Images
+
         st.success("Your weekly meal plan will be displayed shortly.")
         time.sleep(2)
         st.rerun()
@@ -106,3 +121,4 @@ def generateMealPlan(userId):
         st.error("We couldn't generate your meal. Please try again or contact us: admin@gkldevelopment.com")
         print(e)
         st.stop()
+

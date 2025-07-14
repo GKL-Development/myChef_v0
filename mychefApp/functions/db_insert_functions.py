@@ -198,3 +198,39 @@ def pushPreferences(technique, diet, allergens, dislikes, efforts, userId):
                 st.stop()
     else:
         st.error("Invalid UserId, please contact us: admin@gkldevelopment.com")
+
+def databaseImageStorage(cloudinary_pub_id, image_url, meal_id, user_id=st.session_state.user_instance.user_id):
+    """
+    Stores the image (public ID, and URL) in the Neon database.
+    """
+    if cloudinary_pub_id and image_url and meal_id and user_id:
+        variables_dict =  {
+            "recipeimg": image_url,
+            "cloudinary_public_id": cloudinary_pub_id,
+            "meal_id": meal_id,
+            "user_id": int(user_id)
+        }
+
+        push_query = ("""
+            UPDATE meals 
+            SET
+                recipeimg = :recipeimg,
+                cloudinary_public_id = :cloudinary_public_id
+            WHERE 1=1
+                AND meal_id = :meal_id
+                AND creator_id = :user_id;
+        """)
+        # Establishing connection with database
+        conn = init_connection()
+        with conn.session as s:
+            try:
+                s.execute(text(push_query), params=variables_dict)
+                s.commit()
+                return True
+            except Exception as e:
+                st.error("An error occured. Please contact us: admin@gkldevelopment.com")
+                st.error(e)
+                s.rollback()
+                st.stop()
+    else:
+        st.error("Invalid UserId, please contact us: admin@gkldevelopment.com")
