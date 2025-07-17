@@ -1,5 +1,5 @@
 import streamlit as st
-from mychefApp.functions.connection import init_connection
+from functions.connection import init_connection
 
 @st.cache_data(max_entries=200, ttl=3600)
 def fetch_user_recipes(userId, date):

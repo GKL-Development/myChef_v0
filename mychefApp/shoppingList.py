@@ -1,6 +1,6 @@
 # Import packages and dependencies
 import streamlit as st
-from mychefApp.functions.db_fetch_functions import fetch_recipes_ingredients
+from functions.db_fetch_functions import fetch_recipes_ingredients
 
 ss = st.session_state
 ####################################### Shopping List ####################################################

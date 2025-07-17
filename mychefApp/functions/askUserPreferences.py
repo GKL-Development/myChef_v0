@@ -1,5 +1,5 @@
 import streamlit as st
-from mychefApp.functions.db_insert_functions import pushPreferences
+from functions.db_insert_functions import pushPreferences
 import time
 
 ss = st.session_state

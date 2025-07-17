@@ -12,7 +12,7 @@ st.set_page_config(
     })
 
 import time # For demonstration of re-run pause
-from mychefApp.functions.authentication import authenticate, register, fetch_user_info, logout
+from functions.authentication import authenticate, register, fetch_user_info, logout
 from streamlit_cookies_controller import CookieController
 
 ss = st.session_state

@@ -3,8 +3,8 @@ import bcrypt
 from sqlalchemy.sql import text
 import pandas as pd # Check whether this makes app crash or not // if not then remove
 import time
-from mychefApp.functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
-from mychefApp.functions.connection import init_connection
+from functions.db_fetch_functions import fetch_recipes_ingredients, fetch_user_recipes
+from functions.connection import init_connection
 ss = st.session_state 
 
 ######################## USER DATA ########################

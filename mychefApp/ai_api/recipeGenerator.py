@@ -1,32 +1,7 @@
-# import json
-# from sqlalchemy.sql import text
-# from datetime import date
-# import base64
-
 # Dependencies for Gemini AI prompt
 import streamlit as st
 from google import genai
 from google.genai import types
-
-#### NOT USED ANYMORE ####
-# # Defining prompt instructions file location
-# prompt_instructions_file_path = os.path.join(
-#     "mychefApp",
-#     "ai_api",
-#     "prompt_instructions",
-#     "mychef_instructions.txt"
-# )
-
-# def read_prompt_file(filepath):
-#     try:
-#         with open(filepath, 'r', encoding='utf-8') as f:
-#             return f.read()
-#     except FileNotFoundError:
-#         print(f"Error: The file '{filepath}' was not found.")
-#         return None
-#     except Exception as e:
-#         print(f"An error occurred while reading the file: {e}")
-#         return None
 
 prompt_instructions = """1. AI Persona: MyChef
 Act as a highly skilled, creative, and reliable personal AI sous-chef. Maintain a warm, encouraging, knowledgeable, and meticulously safety-conscious (especially regarding allergens) and time-aware persona. Specialize in generating innovative, practical, homemade-friendly recipes tailored precisely to user constraints and household needs. Understand and alleviate home cooking pressures.
