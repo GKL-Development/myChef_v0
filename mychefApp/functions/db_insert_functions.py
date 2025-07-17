@@ -75,6 +75,7 @@ def databaseRecipesStorage(recipesData, userId=1):
                     }
                     meal_id_dict[recipe.get("Recipe Title")] = int(str_date + str(i) + str(userId)) # Defining a dictionnary of meal recipes and their ID for ingredients Database insertion
                     s.execute(text(insert_sql), meal_data)
+                    s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": userId, "today": date.today()})
                 s.commit()
                 # st.success(f"Successfully inserted {len(recipes)} recipes for User ID: {1}") // Not needed for user use
             except Exception as e:
@@ -225,7 +226,6 @@ def databaseImageStorage(cloudinary_pub_id, image_url, meal_id, user_id=st.sessi
         with conn.session as s:
             try:
                 s.execute(text(push_query), params=variables_dict)
-                s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": int(user_id), "today": date.today()})
                 s.commit()
                 return True
             except Exception as e:

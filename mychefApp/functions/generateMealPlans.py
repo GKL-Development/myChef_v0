@@ -72,7 +72,6 @@ def generateImage(meal_id, ingredient_list):
     if db_record_id is None:
         print("Workflow failed: Storing in Neon DB failed.")
         return None
-    # You should return a success indicator here
     return True
     
 def generateMealPlan(userId):
