@@ -1,8 +1,8 @@
 import streamlit as st
 from datetime import date
-from mychefApp.functions.generateMealPlans import generateMealPlan, selectMealPref
-from .functions.displayMeals import mealCards, instructions
-from .functions.askUserPreferences import askUserPreferences
+from functions.generateMealPlans import generateMealPlan, selectMealPref
+from functions.displayMeals import mealCards, instructions
+from functions.askUserPreferences import askUserPreferences
 
 ####################################### Dashboard ####################################################
 ss = st.session_state
