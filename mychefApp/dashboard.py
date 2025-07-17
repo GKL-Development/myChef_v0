@@ -1,9 +1,8 @@
 import streamlit as st
 from datetime import date
-
-from functions import generateMealPlans 
-from functions.displayMeals import mealCards, instructions
-from functions.askUserPreferences import askUserPreferences
+from mychefApp.functions import generateMealPlans
+from mychefApp.functions.displayMeals import mealCards, instructions
+from mychefApp.functions.askUserPreferences import askUserPreferences
 
 
 ####################################### Dashboard ####################################################
@@ -54,6 +53,7 @@ st.html(
 # Meal content starts here
 today = date.today() # Defining today date
 todayYear, todayWeek, _ = today.isocalendar() # retrieving today week and year
+# if lastMeal is not None:
 if str(lastMeal) == '1970-01-01':
     st.subheader("Welcome to MyChef!")
     st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
