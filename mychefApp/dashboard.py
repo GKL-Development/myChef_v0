@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-from functions.generateMealPlan import generateMealPlan, selectMealPref
+from functions.generateMealPlans import generateMealPlan, selectMealPref
 from functions.displayMeals import mealCards, instructions
 from functions.askUserPreferences import askUserPreferences
 

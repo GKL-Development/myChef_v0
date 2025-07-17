@@ -5,7 +5,6 @@ from ai_api.imageGenerator import imageGenerator, uploadImageToCloud
 from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage, databaseImageStorage
 from functions.authentication import fetch_user_info
 from functions.connection import configure_cloudinary
-from functions.db_fetch_functions import fetch_recipes_ingredients
 
 ############################## GENERATE MEAL PLAN ##############################
 
