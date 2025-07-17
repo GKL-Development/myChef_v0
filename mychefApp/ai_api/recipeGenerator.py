@@ -5,7 +5,6 @@
 
 # Dependencies for Gemini AI prompt
 import streamlit as st
-import os
 from google import genai
 from google.genai import types
 

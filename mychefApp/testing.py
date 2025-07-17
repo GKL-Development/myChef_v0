@@ -2,8 +2,8 @@
 import streamlit as st
 import pandas as pd
 import json, time
-from ai_api.recipeGenerator import gemini_ai_api
-from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
+from mychefApp.ai_api.recipeGenerator import gemini_ai_api
+from mychefApp.functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage
 from streamlit_cookies_controller import CookieController
 
 # Defining default prompt text - no restrictions

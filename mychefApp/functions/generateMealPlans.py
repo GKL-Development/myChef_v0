@@ -1,10 +1,10 @@
 import streamlit as st
 import time, json
-from ai_api.recipeGenerator import gemini_ai_api
-from ai_api.imageGenerator import imageGenerator, uploadImageToCloud
-from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage, databaseImageStorage
-from functions.authentication import fetch_user_info
-from functions.connection import configure_cloudinary
+from mychefApp.ai_api.recipeGenerator import gemini_ai_api
+from mychefApp.ai_api.imageGenerator import imageGenerator, uploadImageToCloud
+from mychefApp.functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage, databaseImageStorage
+from mychefApp.functions.authentication import fetch_user_info
+from mychefApp.functions.connection import configure_cloudinary
 
 ############################## GENERATE MEAL PLAN ##############################
 
