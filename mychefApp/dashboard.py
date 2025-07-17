@@ -1,9 +1,11 @@
 import streamlit as st
 from datetime import date
-from functions.generateMealPlans import generateMealPlan, selectMealPref
 from functions.displayMeals import mealCards, instructions
+from functions import generateMealPlans
 from functions.askUserPreferences import askUserPreferences
 
+generateMealPlan = generateMealPlans.generateMealPlan()
+selectMealPref = generateMealPlans.selectMealPref()
 ####################################### Dashboard ####################################################
 ss = st.session_state
 lastMeal = st.session_state.user_instance.lastMeal
