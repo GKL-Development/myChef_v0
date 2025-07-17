@@ -184,7 +184,7 @@ def registration_dialog(email, password):
         "Male": "M",
         "Female": "F",
         ":rainbow[Other]": "O",
-        "Don't Specify": None
+        "Don't Specify": "/"
     }
     # Sarting dialog form
     st.write("Thank you for signing up! " \

@@ -5,10 +5,7 @@ from ai_api.imageGenerator import imageGenerator, uploadImageToCloud
 from functions.db_insert_functions import databaseRecipesStorage, databaseIngredientsStorage, databaseImageStorage
 from functions.authentication import fetch_user_info
 from functions.connection import configure_cloudinary
-import requests
-import psycopg2
-from psycopg2 import sql
-import os
+from functions.db_fetch_functions import fetch_recipes_ingredients
 
 ############################## GENERATE MEAL PLAN ##############################
 
@@ -50,16 +47,40 @@ def selectMealPref():
             "creativity": creativity
             }
         st.rerun()
-def generateImage(meal_id):
+
+def generateImage(meal_id, ingredient_list):
     """
     Orchestrates the entire process of image generation: generate, upload, store link.
     """
     configure_cloudinary()
-    image_data = imageGenerator()
-    return
-
+    
+    image_data = imageGenerator(meal=meal_id, ingredient_list=ingredient_list)
+    # Corrected check for image generation failure
+    if image_data is False:
+        st.error('Failed generating meals image. Please contact us: admin@gkldevelopment.com')
+        print("Workflow failed: Image generation failed.")
+        return None
+    cloudinary_response = uploadImageToCloud(image_data)
+    if cloudinary_response is None:
+        print("Workflow failed: Cloudinary upload failed.")
+        return None
+    cloudinary_public_id = cloudinary_response.get("public_id")
+    image_link = cloudinary_response.get("secure_url")
+    if not image_link or not cloudinary_public_id:
+        print("Workflow failed: Missing public ID or secure URL from Cloudinary.")
+        return None
+    db_record_id = databaseImageStorage(cloudinary_pub_id=cloudinary_public_id, image_url=image_link, meal_id=meal_id)
+    if db_record_id is None:
+        print("Workflow failed: Storing in Neon DB failed.")
+        return None
+    # You should return a success indicator here
+    return True
+    
 def generateMealPlan(userId):
-
+    """
+    Pipeline for the full meal planning generation process. 
+    Handles AI generation tasks, database insertions and session_state updating.
+    """
     user = int(userId)
     ss = st.session_state
     ssp = ss["mealPreferences"]
@@ -85,9 +106,11 @@ def generateMealPlan(userId):
             # Instanciating the prompting and meal generation process
             st.write("Providing informations to MyChef...")
             time.sleep(2)
+            
             # Prompting MyChef
             st.write("Generating your meal plan...")
             structured_output = gemini_ai_api(prompt_text, ssp["creativity"])
+            
             # Extracting the output as a Python dictionnary
             st.write("Saving your meals...")
             if structured_output:
@@ -98,27 +121,70 @@ def generateMealPlan(userId):
                 "Please try again in a couple hours or contact us: admin@gkldevelopment.com.")
                 status.update(label="Failed to generate meal plan. Please try again", state="error", expanded=False)
                 st.stop()
+            # Saving shopping list
             mealId = databaseRecipesStorage(recipesData=recipesData, userId=user)
             if mealId:
-                # Saving shopping list
                 st.write("Crafting your shopping list...")
-                if databaseIngredientsStorage(recipesData=recipesData, meal_id_dict=mealId, userId=user):
-                    del ss.user_instance
-                    if fetch_user_info(email=ss["email"]):
-                        status.update(label="Meal plan generated!", state="complete", expanded=False)
-                else:
-                    status.update(label="Failed to save your ingredients. Please try again", state="error", expanded=False)
-                    st.stop()
             else:
                 status.update(label="Failed to save your meal plan. Please try again", state="error", expanded=False)
                 st.stop()
-            # Generating Meals Images
 
+            # Uploading Ingredients to DB
+            ingredients_uploaded = databaseIngredientsStorage(recipesData=recipesData, meal_id_dict=mealId, userId=user)
+            if ingredients_uploaded:    
+                st.write("Generating meals images...")
+            else:
+                status.update(label="Failed to save your ingredients. Please try again", state="error", expanded=False)
+                st.stop()
+            # # Add these lines to debug
+            # print("--- Debugging Data ---")
+            # print("mealId Dictionary:", mealId)
+            # print("recipesData List:", recipesData['recipes'][0]["Recipe Title"])
+            # print("----------------------")
+            # Generating Meals Images
+            recipesList = recipesData['recipes']
+            for index in range(len(recipesList)):
+                try:
+                    recipeId = mealId[recipesList[index]["Recipe Title"]]
+                    recipeIngredients = recipesList[index]["Ingredients List"]
+                    # Check if the ingredients list is not empty
+                    if not recipeIngredients:
+                        print(f"Skipping image generation for meal ID: {recipeId} - No ingredients found.")
+                        continue # Move to the next recipe
+                    # Convert the list of ingredients to a string
+                    ingredientsList = ", ".join(item["Ingredient Name"] for item in recipeIngredients if "Ingredient Name" in item)
+                    # Ensure the list is not empty after filtering
+                    if not ingredientsList:
+                        print(f"Skipping image generation for meal ID: {recipeId} - No valid ingredient names found.")
+                        continue
+                    print(f"Generating image for meal ID: {recipeId} with ingredients: {ingredientsList}")
+                    # Call the image generation function
+                    image_generation_success = generateImage(meal_id=recipeId, ingredient_list=ingredientsList)
+                    # Check if image generation failed
+                    if not image_generation_success:
+                        status.update(label="Failed to generate and upload your images. Please try again", state="error", expanded=False)
+                        st.stop()
+                except KeyError as e:
+                    print(f"An error occurred: Missing key {e} for recipe at index {index}.")
+                    # Optionally, update the status and stop or continue
+                    status.update(label=f"An error occurred while processing recipes. Missing data: {e}", state="error", expanded=False)
+                    st.stop()
+                except Exception as e:
+                    print(f"An unexpected error occurred at index {index}: {e}")
+                    status.update(label="An unexpected error occurred. Please try again.", state="error", expanded=False)
+                    st.stop()
+            del ss.user_instance
+            if fetch_user_info(email=ss["email"]):
+                status.update(label="Meal plan generated!", state="complete", expanded=False)
+            else:
+                status.update(label="Failed to generate and upload your images. Please try again", state="error", expanded=False)
+                st.stop()
         st.success("Your weekly meal plan will be displayed shortly.")
         time.sleep(2)
         st.rerun()
     except Exception as e:
         st.error("We couldn't generate your meal. Please try again or contact us: admin@gkldevelopment.com")
+        # st.warning(f"Failed because of: {e}") | ONLY FOR DEBUG PURPOSES
         print(e)
         st.stop()
 

@@ -75,7 +75,6 @@ def databaseRecipesStorage(recipesData, userId=1):
                     }
                     meal_id_dict[recipe.get("Recipe Title")] = int(str_date + str(i) + str(userId)) # Defining a dictionnary of meal recipes and their ID for ingredients Database insertion
                     s.execute(text(insert_sql), meal_data)
-                s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": userId, "today": today})
                 s.commit()
                 # st.success(f"Successfully inserted {len(recipes)} recipes for User ID: {1}") // Not needed for user use
             except Exception as e:
@@ -157,6 +156,7 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
                 s.rollback()
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
+    return True
 
 def pushPreferences(technique, diet, allergens, dislikes, efforts, userId):
     """
@@ -225,6 +225,7 @@ def databaseImageStorage(cloudinary_pub_id, image_url, meal_id, user_id=st.sessi
         with conn.session as s:
             try:
                 s.execute(text(push_query), params=variables_dict)
+                s.execute(text("UPDATE users SET lastmeal = :today WHERE user_id = :user_id"), {"user_id": int(user_id), "today": date.today()})
                 s.commit()
                 return True
             except Exception as e:

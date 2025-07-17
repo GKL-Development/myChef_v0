@@ -5,7 +5,7 @@ import cloudinary.uploader
 import streamlit as st
 
 def imageGenerator(meal, ingredient_list):
-    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+    client = genai.Client(api_key=st.secrets["gemini_api_key"])
 
     result = client.models.generate_images(
         model="models/imagen-3.0-generate-002",

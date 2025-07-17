@@ -19,7 +19,10 @@ def instructions(col):
         ss.selected_meal = None
         st.rerun()
     st.subheader(mealPlan['recipetitle'])
-    st.image('./img/weeklyMealImg/placeholder.jpg', caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
+    if mealPlan['recipeimg']:
+        st.image(mealPlan['recipeimg'], caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
+    else:
+        st.image('./img/weeklyMealImg/placeholder.jpg', caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
     # st.markdown(f'''
     #             {":green-badge[:material/check: Allergen Free]" 
     #              if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() or mealPlan['allergens'] == "{}" 
@@ -36,25 +39,25 @@ def instructions(col):
     time_str = mealPlan.get('totaltime', 'N/A').split(" (")[0]
     time_badge = f":blue-badge[🕒 Ready in {time_str}]"
     st.markdown(f"{allergen_badge} {time_badge}")
-
     ing, rec = st.tabs(["Ingredients", "Instructions"])
     with ing:
         st.html("<h2>Requirements & Ingredients:</h2>")
         st.write(f"For this recipe you will need a ***{equipments.lower()}***")
-        for i in range(len(recipe_ingredients)):
-            # Formatizing ingredients display in shopping list
-            if recipe_ingredients['unit'].iloc[i] in ("tablespoon", "tablespoons", "teaspoon", "teaspoons", "cup", "cups"):
-                ingredient = recipe_ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
-            elif recipe_ingredients['quantity'].iloc[i] != 0:
-                ingredient = str(int(recipe_ingredients['quantity'].iloc[i])) + " " + recipe_ingredients['unit'].iloc[i] + " " + ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
-            else: 
-                ingredient = recipe_ingredients['unit'].iloc[i] + " " + recipe_ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
-            # Returning ingredient
-            st.write(f"- {ingredient.capitalize()}")
+        st.write(recipe_ingredients.drop("recipe_id", axis=1))
+        # for i in range(len(recipe_ingredients)):
+        #     # Formatizing ingredients display in shopping list
+        #     if recipe_ingredients['unit'].iloc[i] in ("tablespoon", "tablespoons", "teaspoon", "teaspoons", "cup", "cups"):
+        #         ingredient = recipe_ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
+        #     elif recipe_ingredients['quantity'].iloc[i] != 0:
+        #         ingredient = str(int(recipe_ingredients['quantity'].iloc[i])) + " " + recipe_ingredients['unit'].iloc[i] + " " + recipe_ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
+        #     else: 
+        #         ingredient = recipe_ingredients['unit'].iloc[i] + " " + recipe_ingredients['ingredient_name'].iloc[i]#.split(", ")[0]
+        #     # Returning ingredient
+        #     st.write(f"- {str(ingredient).capitalize()}")
     with rec:
         st.html("<h2>Instructions:</h2>")
-        for instruction in instructions:
-            st.write(f"- {instruction}")
+        for index, instruction in enumerate(instructions, 1):
+            st.write(f"{index}. {instruction}")
 
 
 # @st.cache_data(max_entries=200)
@@ -91,9 +94,11 @@ def mealCards():
                 with cols[i]:
                     row = current_col
                     st.subheader(weekDays[current_col])
-                    st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
-                    # st.markdown(f"""{":green-badge[:material/check: Allergen Free]" if weeklyPlan[current_col]['allergens'] == "{}" or "None" in weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize() else f":orange-badge[⚠️{weeklyPlan[current_col]['allergens'].strip('{}"').split()[0].capitalize()}]"} :blue-badge[🕒 Ready in {weeklyPlan[current_col]['totaltime'].split(" (")[0]}]""")
-                    
+                    if weeklyPlan[current_col]["recipeimg"]:
+                        st.image(image=weeklyPlan[current_col]["recipeimg"], caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
+                    else:
+                        st.image('./img/weeklyMealImg/placeholder.jpg', caption=weeklyPlan[current_col]['recipetitle'].ljust(65-len(weeklyPlan[current_col]['recipetitle'])), use_container_width=True, width=300)
+                                        
                     ##### Simplifying the markdown string due to error of unterminated f-string #####
                     allergens_str = weeklyPlan[current_col].get('allergens', '').strip('{}"') 
                     if not allergens_str or 'none' in allergens_str.lower():

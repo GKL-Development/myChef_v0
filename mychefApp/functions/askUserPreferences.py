@@ -1,6 +1,5 @@
 import streamlit as st
 from functions.db_insert_functions import pushPreferences
-from functions.generateMealPlan import selectMealPref
 import time
 
 ss = st.session_state

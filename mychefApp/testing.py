@@ -41,11 +41,11 @@ def authenticate():
     elif st.session_state["tester_logged_in"]:
         return True
 
-recipe_insert, recipe_gen, ingredients_insert, cookies_manager = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef :cook:", "Upload Ingredients 🛒", "Cookies Manager :cookie:"]) 
+recipe_insert, recipe_gen, ingredients_insert, cookies_manager = st.tabs(["Upload Recipe :floppy_disk:", "Recipe Generator - MyChef 👨🏻‍🍳", "Upload Ingredients 🛒", "Cookies Manager :cookie:"]) 
 if authenticate():
     # Testing SQL insertion
     with recipe_insert:
-        st.info("Updated:" \
+        st.info("Updated: \n"
         "Now the function will not only store the recipes in the db but also store the ingredients list for these recipes.")
         st.subheader("Recipes insertion to database")
         st.text("Fill up the text area with the JSON output of a recipe and your userID and press the button to insert this recipe to the database")
@@ -107,6 +107,7 @@ if authenticate():
                             sep='.',
                             errors='ignore'
                         ))
+            st.write(structured_output_dict["recipes"])
             # Not using the MyChef tips for the moment.
             # st.dataframe(pd.json_normalize(
             #                 structured_output_dict["recipes"],
@@ -120,7 +121,7 @@ if authenticate():
         st.subheader("Pushing ingredients to the database!")
         st.text("Input as many incredients you want to push on the database. Make sure your ingredients are all comma-separated.")
         st.text_area("Copy paste your list here:")
-        if st.button("Push Ingredients", icon='👨🏻‍🍳🎛', key='ingredients_push'):
+        if st.button("Push Ingredients", icon='🎛', key='ingredients_push'):
             st.warning("Not working")# To use the insert ingredient function
     with cookies_manager:
         st.subheader("Cookies manager 🍪")
