@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-from functions.db_fetch_functions import fetch_user_recipes, fetch_recipes_ingredients
+from db_fetch_functions import fetch_user_recipes, fetch_recipes_ingredients
 import math
 
 ################################## Variable, classes and functions ########################################

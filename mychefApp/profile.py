@@ -1,6 +1,6 @@
 import streamlit as st
-from functions.askUserPreferences import askUserPreferences
-from functions.authentication import fetch_user_info
+from askUserPreferences import askUserPreferences
+from authentication import fetch_user_info
 
 ss_user = st.session_state.user_instance
 ss_pref = st.session_state.preferences

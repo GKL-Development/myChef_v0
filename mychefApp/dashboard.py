@@ -1,8 +1,8 @@
 import streamlit as st
 from datetime import date
-from functions import generateMealPlans
-from functions.displayMeals import mealCards, instructions
-from functions.askUserPreferences import askUserPreferences
+import generateMealPlans
+from displayMeals import mealCards, instructions
+from askUserPreferences import askUserPreferences
 
 
 ####################################### Dashboard ####################################################

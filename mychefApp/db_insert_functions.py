@@ -2,7 +2,7 @@ import streamlit as st
 from sqlalchemy.sql import text
 import pandas as pd
 from datetime import date
-from functions.connection import init_connection
+from connection import init_connection
 
 def databaseRecipesStorage(recipesData, userId=1):
     """The function takes recipesData already JSON parsed 
