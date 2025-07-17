@@ -1,5 +1,5 @@
 import streamlit as st
-from functions.connection import init_connection
+from connection import init_connection
 
 @st.cache_data(max_entries=200, ttl=3600)
 def fetch_user_recipes(userId, date):
