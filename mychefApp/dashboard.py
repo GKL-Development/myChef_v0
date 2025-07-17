@@ -1,8 +1,10 @@
 import streamlit as st
 from datetime import date
-from functions.generateMealPlans import generateMealPlan, selectMealPref
+
+from functions import generateMealPlans 
 from functions.displayMeals import mealCards, instructions
 from functions.askUserPreferences import askUserPreferences
+
 
 ####################################### Dashboard ####################################################
 ss = st.session_state
@@ -52,19 +54,18 @@ st.html(
 # Meal content starts here
 today = date.today() # Defining today date
 todayYear, todayWeek, _ = today.isocalendar() # retrieving today week and year
-# if lastMeal is not None:
 if str(lastMeal) == '1970-01-01':
     st.subheader("Welcome to MyChef!")
     st.text("We're excited to craft a meal plan that's just right for you! To make it truly personalized, could you share a little more about yourself?")
     st.html("<br>")
     if st.button("Enter the Preferences Form", use_container_width=True, key='prefBtn', type='secondary'):
         askUserPreferences()
-    if "userPref" in ss:
+    elif "userPref" in ss:
         if ss.userPref == True:
             if "mealPreferences" not in ss:
-                selectMealPref()
+                generateMealPlans.selectMealPref() 
             else:
-                generateMealPlan(ss.user_instance.user_id)
+                generateMealPlans.generateMealPlan(ss.user_instance.user_id)
 
 else:
     try:
@@ -81,12 +82,9 @@ else:
             st.html("<br>")
             if "mealPreferences" not in ss:
                 if st.button('Plan your weekly meals!', icon='📅', use_container_width=True):
-                    selectMealPref()
+                    generateMealPlans.selectMealPref()
             else:
-                generateMealPlan(ss.user_instance.user_id)
+                generateMealPlans.generateMealPlan(ss.user_instance.user_id)
     except Exception as e:
         print(e)
         print('User has never generated meal')
-        
-
-        
