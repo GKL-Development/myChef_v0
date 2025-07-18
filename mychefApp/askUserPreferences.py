@@ -1,8 +1,10 @@
 import streamlit as st
-from db_insert_functions import pushPreferences
+from db_insert_functions import pushPreferences, updateCredentials
+from authentication import fetch_user_info
 import time
 
 ss = st.session_state
+ss_user = st.session_state.user_instance
 sep = ", "
 @st.dialog("We'd love to learn more about you!")
 def askUserPreferences():
@@ -88,3 +90,45 @@ def askUserPreferences():
             else:
                 status.update(label="Failed to upload", state="error", expanded=False)
                 st.stop()
+
+@st.dialog("Please update your credentials information:")
+def update_dialog(email=ss.user_instance.email):
+    # Defining gender dictionnary for user informations
+    gender_dict = {
+        "Male": "M",
+        "Female": "F",
+        "Don't Specify": "/"
+    }
+    # Sarting dialog form
+    st.write("Update your personal informations here below.")
+
+    # Prompting user for information
+    firstname = st.text_input("Update your firstname:", placeholder="Firstname", value=ss_user.firstName)
+    lastname = st.text_input("Update your lastname:", placeholder="Lastname", value=ss_user.lastName)
+    username = st.text_input("Update your username:", placeholder="Username", value=ss_user.userName)
+    birthdate = st.date_input("Update your birthdate:", value=ss_user.birthdate, min_value="1900-01-01")
+    gender_choice = st.radio("What gender are you?",["Male", "Female", "Don't Specify"])
+    sex = gender_dict[gender_choice]
+    if st.button("Update", use_container_width=True):
+        if not firstname or not lastname or not birthdate or not sex:
+            st.warning("One of the information has not been filled.")
+        else:
+            if updateCredentials(firstname=firstname, lastname=lastname, age=birthdate, username=username):
+                # Useless design for database communication waiting time
+                progress_text = "Updating your credentials..."
+                my_bar = st.progress(0, text=progress_text)
+                for percent_complete in range(0,100):
+                    my_bar.progress(percent_complete+1, text=progress_text)
+                    time.sleep(0.02)
+                time.sleep(1)
+                my_bar.empty
+                st.success("Updated successfully!")
+                # Fetching user info on db
+                if fetch_user_info(email=email):
+                    st.session_state["authenticated"] = True
+                    st.session_state["email"] = email
+                    st.rerun()
+                else:
+                    st.error("Failed to fetch user information after registration. Please try logging in manually.")
+            else:
+                st.error("Update failed. Please try again or contact support.")

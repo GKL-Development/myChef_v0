@@ -1,9 +1,10 @@
 import streamlit as st
-from askUserPreferences import askUserPreferences
+from askUserPreferences import askUserPreferences, update_dialog
 
 ss_user = st.session_state.user_instance
-ss_pref = st.session_state.preferences
-required_keys = {"technique", "diet", "allergy", "dislikes", "efforts"}
+# Deprecated
+# ss_pref = st.session_state.preferences
+# required_keys = {"technique", "diet", "allergy", "dislikes", "efforts"}
 
 ####################################### Profile ####################################################
 st.title(f"{ss_user.firstName}'s profile 👤")
@@ -12,18 +13,7 @@ st.title(f"{ss_user.firstName}'s profile 👤")
 info, food_pref = st.tabs(["Informations 🪪", "Preferences 🍽️"])
 
 with info:
-    st.subheader("Credential Information:")
-    # Name columns
-    firstname, lastname, _ = st.columns(3, vertical_alignment="top", gap="small", border=False)
-    firstname.text_input("Firstname:", value=ss_user.firstName)
-    lastname.text_input("Lastname:", value=ss_user.lastName)
-
-    # Other personnal info columns
-    age, username, _ = st.columns(3, vertical_alignment="top", gap="small", border=False)
-    age.date_input("Birthdate:", value=ss_user.birthdate)
-    username.text_input("Username:", value=ss_user.userName)
-    # sex.selectbox("Gender:", ("Male", "Female", "Other", "Don't specify")) // Not implemented 
-
+    st.subheader("Email & Password:")
     # Login credentials
     email, _ = st.columns([2, 1], vertical_alignment="top", gap="small", border=False)
     email.text_input("Email:", value=ss_user.email)
@@ -35,16 +25,15 @@ with info:
             st.error("Password must match!")
     # Save and commit changes to db
     st.divider()
-    st.info("Saving changes is not yet functionnal. Do not try saving.")
-    l_, mid, r_ = st.columns([3,1,3], border=False, vertical_alignment="top")
-    if mid.button("Save", type="primary", use_container_width=True):
-        st.warning("Changes cannot be saved yet. Try another time.")
+    st.subheader("Informations:")
+    l_, mid, r_ = st.columns([1,2,1], border=False, vertical_alignment="top")
+    if mid.button("Update Your Credentials", type="primary", use_container_width=True):
+        update_dialog()
 
 with food_pref:
     # Food preferences
-    st.subheader("Food Preferences:")
-    st.write("Update your preferences here below.")
-    l_, mid, r_ = st.columns([3,2,3], border=False, vertical_alignment="top")
+    st.subheader("Preferences:")
+    l_, mid, r_ = st.columns([1,2,1], border=False, vertical_alignment="top")
     if mid.button("Update Your Preferences", type="primary", use_container_width=True):
         askUserPreferences()
 

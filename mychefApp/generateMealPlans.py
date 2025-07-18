@@ -99,7 +99,7 @@ def generateMealPlan(userId):
 
     try:
         # Generating meals from Gemini API 
-        with st.status("MyChef is cooking!", expanded=True) as status:
+        with st.status("MyChef is cooking!", expanded=False) as status:
             # Instanciating the prompting and meal generation process
             st.write("Providing informations to MyChef...")
             time.sleep(2)

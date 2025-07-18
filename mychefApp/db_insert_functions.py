@@ -4,6 +4,8 @@ import pandas as pd
 from datetime import date
 from connection import init_connection
 
+ss_user = st.session_state.user_instance
+ss = st.session_state
 def databaseRecipesStorage(recipesData, userId=1):
     """The function takes recipesData already JSON parsed 
     and deconstruct it to store it in the database"""
@@ -158,6 +160,44 @@ def databaseIngredientsStorage(recipesData, meal_id_dict, userId=1):
     else:
         st.error("Database meal storage error. Contact admin@gkldevelopment.com or try again.")
     return True
+
+def updateCredentials(firstname=ss_user.firstName, lastname=ss_user.lastName, age=ss_user.birthdate, username=ss_user.userName):
+    """
+    Pushing preferences into user table.
+    """
+    if firstname and lastname and age:
+        variables_dict = {
+            "firstname": firstname,
+            "lastname": lastname,
+            "age": age,
+            "username": username,
+            "user_id": int(ss.user_instance.user_id)
+        }
+
+        preferencesQuery = ("""
+            UPDATE users
+            SET
+                firstname = :firstname,
+                lastname = :lastname,
+                birthdate = :age,
+                username = :username
+            WHERE 
+                user_id = :user_id
+        """)
+        # Establishing connection with database
+        conn = init_connection()
+        with conn.session as s:
+            try:
+                s.execute(text(preferencesQuery), params=variables_dict)
+                s.commit()
+                return True
+            except Exception as e:
+                st.error("An error occured. Please contact us: admin@gkldevelopment.com")
+                st.error(e)
+                s.rollback()
+                st.stop()
+    else:
+        st.error("Invalid UserId, please contact us: admin@gkldevelopment.com")
 
 def pushPreferences(technique, diet, allergens, dislikes, efforts, userId):
     """
