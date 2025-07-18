@@ -1,6 +1,5 @@
 import streamlit as st
 from askUserPreferences import askUserPreferences
-from authentication import fetch_user_info
 
 ss_user = st.session_state.user_instance
 ss_pref = st.session_state.preferences
@@ -34,20 +33,18 @@ with info:
     with pwd_error:
         if password != password_confirm:
             st.error("Password must match!")
+    # Save and commit changes to db
+    st.divider()
+    st.info("Saving changes is not yet functionnal. Do not try saving.")
+    l_, mid, r_ = st.columns([3,1,3], border=False, vertical_alignment="top")
+    if mid.button("Save", type="primary", use_container_width=True):
+        st.warning("Changes cannot be saved yet. Try another time.")
 
 with food_pref:
     # Food preferences
     st.subheader("Food Preferences:")
-    if required_keys.isdisjoint(ss_pref):
-        st.write("It seems like you never set your preferences for your eating habits. Click the button below to set this up!")
-        if st.button("Let us know more about you!", key="selectPrefOnProfile", type="primary"):
-            askUserPreferences()
-            if not fetch_user_info():
-                st.warning("Failed to fetch updated informations. Please consider refreshing the web page.")
+    st.write("Update your preferences here below.")
+    l_, mid, r_ = st.columns([3,2,3], border=False, vertical_alignment="top")
+    if mid.button("Update Your Preferences", type="primary", use_container_width=True):
+        askUserPreferences()
 
-# Save and commit changes to db
-st.divider()
-st.info("Saving changes is not yet functionnal. Do not try saving.")
-l_, mid, r_ = st.columns([3,1,3], border=False, vertical_alignment="top")
-if mid.button("Save", type="primary", use_container_width=True):
-    st.warning("Changes cannot be saved yet. Try another time.")

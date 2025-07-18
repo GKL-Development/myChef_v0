@@ -23,12 +23,6 @@ def instructions(col):
         st.image(mealPlan['recipeimg'], caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
     else:
         st.image('./img/weeklyMealImg/placeholder.jpg', caption=mealPlan['mychefnotes'], use_container_width=True, width=300)
-    # st.markdown(f'''
-    #             {":green-badge[:material/check: Allergen Free]" 
-    #              if "None" in mealPlan['allergens'].strip('{}"').split()[0].capitalize() or mealPlan['allergens'] == "{}" 
-    #              else f":orange-badge[⚠️{mealPlan['allergens'].strip('{}"').split()[0].capitalize()}]"} 
-    #              :blue-badge[🕒 Ready in {mealPlan['totaltime'].split(" (")[0]}]''')
-
     ##### Simplifying the markdown string due to error of unterminated f-string #####
     allergens_str = mealPlan.get('allergens', '').strip('{}"') 
     if not allergens_str or 'none' in allergens_str.lower():

@@ -12,8 +12,7 @@ from connection import configure_cloudinary
 
 @st.dialog("Tell MyChef about your preferences")
 def selectMealPref():
-    st.info("For simplicity in this test version, we won't ask about your allergens, diet or dislikes, " \
-        "but we'll still provide allergen information, whether it contains meat or fish, and a full ingredient list.")
+    st.info("Your diet, allergens and dislikes preferences will be taken into account during the meal generation.")
     
     # Implement meal days storage in db to render meal cards with correct meals
     days_options = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
