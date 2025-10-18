@@ -183,7 +183,6 @@ def registration_dialog(email, password):
     gender_dict = {
         "Male": "M",
         "Female": "F",
-        ":rainbow[Other]": "O",
         "Don't Specify": "/"
     }
     # Sarting dialog form
@@ -195,7 +194,7 @@ def registration_dialog(email, password):
     lastname = st.text_input("What is your lastname?", placeholder="Lastname")
     username = st.text_input("Enter a username:", placeholder="Username")
     birthdate = st.date_input("When's your birthdate?", value=None, min_value="1900-01-01")
-    gender_choice = st.radio("What gender are you?",["Male", "Female", ":rainbow[Other]", "Don't Specify"])
+    gender_choice = st.radio("What gender are you?",["Male", "Female", "Don't Specify"])
     sex = gender_dict[gender_choice]
     if st.button("Submit", use_container_width=True):
         if not firstname or not lastname or not birthdate or not sex:
