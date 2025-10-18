@@ -49,7 +49,7 @@ if ss["authenticated"]:
         ss["email"] = None
         st.error("Database connection failed. Try login again or contact support at admin@gkldevelopment.com")
         st.rerun() # Rerun to show login form
-    if st.sidebar.button("Check our crowdfunding!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
+    if st.sidebar.button("Be an early adopter!", use_container_width=True): # To be replaced by st.sidebar.link_button("Check our crowdfunding!", use_container_width=True, url=""): // and remove warning
         st.sidebar.warning("Not yet live. Come back in a couple of days!")
     if st.sidebar.button("Logout", use_container_width=True, type="primary", key="logout"):
         if logout(controller):
