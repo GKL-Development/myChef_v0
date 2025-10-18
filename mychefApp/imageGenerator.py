@@ -17,7 +17,7 @@ def imageGenerator(meal, ingredient_list):
                 Style: Clean, bright, fresh, high-quality, and approachable.
                 Lighting: Natural or studio-like.
                 Perspective: Top-down.
-                Negative Prompt: Avoid harsh shadows, clutter, artificial colors, and blurry focus. No cutlery or kitchen cooking tools.""",
+                Negative Prompt: Avoid harsh shadows, clutter, artificial colors, and blurry focus. No cutlery or kitchen cooking tools. No text or other elements on the image.""",
         config=dict(
             number_of_images=1,
             output_mime_type="image/jpeg",
