@@ -74,6 +74,11 @@ if ss["authenticated"]:
                 "shoppingList.py",
                 title='Shopping List',
                 icon="🗒️"
+            ),
+            st.Page(
+                "imageToRecipe.py",
+                title='Image To Recipe',
+                icon="📸"
             )
         ],
         "Ressources":[

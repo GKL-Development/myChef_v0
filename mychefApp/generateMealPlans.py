@@ -88,7 +88,7 @@ def generateMealPlan(userId):
     Dietary preferences: {ss.preferences['diet']}
     Allergy Constraints: {ss.preferences['allergy']}
     Disliked Ingredients: {ss.preferences['dislikes']}
-    Seasonal/Regional Focus: Early summer in Europe.
+    Seasonal/Regional Focus: Mid-autumn in Europe.
     Household Composition: {ssp["adults"]} adults, {ssp["childs"] if ssp["childs"] is not None else 0} child
     Meal Type: Dinner
     Maximum Total Time: {ssp["total_time"]}.
