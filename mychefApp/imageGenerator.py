@@ -8,7 +8,7 @@ def imageGenerator(meal, ingredient_list):
     client = genai.Client(api_key=st.secrets["gemini_api_key"])
 
     result = client.models.generate_images(
-        model="models/imagen-3.0-generate-002",
+        model="models/imagen-4.0-generate-001",
         prompt=f"""
                 Prompt Type: Image Generation
                 AI Model: Optimized for photographic realism and food styling.
